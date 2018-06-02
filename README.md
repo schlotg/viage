@@ -23,11 +23,14 @@ It turns out that a lot of time and effort goes into making browsers fast with t
 
 ### Is Viage small?
 To test this I created a shopping list app in Angular, React, and Via. The total code sizes generated for each framework is shown below:
+
+
 | Framework | Size          |
 |-----------|---------------|
 | Viage     | 14KB          |
 | Angular   | 3.884 MB      |
 | React     | (Coming soon) |
+
 
 ### Is Viage easy?
 I think so. If you compare the React, Angular, and Viage versions of the Shopping List App. You will see that a similar amount of code had to be written for each framework. If anything,I think the Viage version wins at being the smallest and easiest to understand.
