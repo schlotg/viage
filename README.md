@@ -23,17 +23,17 @@ It turns out that a lot of time and effort goes into making browsers fast with t
 
 ### Is Viage small?
 To test this I created a shopping list app in Angular, React, and Via. The total code sizes generated for each framework is shown below:
-
-|----------|---------------|
-| Via      | 14KB          |
-| Angular  | 3.884 MB      |
-| React    | (Coming soon) |
+| Framework | Size          |
+|-----------|---------------|
+| Viage     | 14KB          |
+| Angular   | 3.884 MB      |
+| React     | (Coming soon) |
 
 ### Is Viage easy?
 I think so. If you compare the React, Angular, and Viage versions of the Shopping List App. You will see that a similar amount of code had to be written for each framework. If anything,I think the Viage version wins at being the smallest and easiest to understand.
 
 ### What are the advantages of Viage?
-Besides being fast, small, and very compatible with existing libraries, Viage relies on standard web technologies that are already well documented and well maintained. A side effect of this is that Via is very low complexity and minimal.
+Besides being fast, small, and very compatible with existing libraries, Viage relies on standard web technologies that are already well documented and well maintained. A side effect of this is that Viage is low complexity and minimal.
 
 ## Getting Started (Viage CLI Coming Soon)
 - Open a terminal or command line prompt and change directory to your projects directory
@@ -43,7 +43,7 @@ Besides being fast, small, and very compatible with existing libraries, Viage re
 ```
 - Now create an empty project that will output a 'Hello From Viage' Page. You can use any project name but this example uses hello-world-viage
 ```
-  npm install -g via-cli
+  npm install -g viage-cli
   via create hello-world-viage
   cd hello-world-viage
 ```
