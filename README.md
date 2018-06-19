@@ -38,7 +38,7 @@ I think so. If you compare the React, Angular, and Viage versions of the Shoppin
 ### What are the advantages of Viage?
 Besides being fast, small, and very compatible with existing libraries, Viage relies on standard web technologies that are already well documented and well maintained. A side effect of this is that Viage is low complexity and minimal.
 
-## Getting Started (Viage CLI Coming Soon)
+## Getting Started
 - Open a terminal or command line prompt and change directory to your projects directory
 - If you haven't already installed the Viage CLI:
 ```
@@ -47,7 +47,7 @@ Besides being fast, small, and very compatible with existing libraries, Viage re
 - Now create an empty project that will output a 'Hello From Viage' Page. You can use any project name but this example uses hello-world-viage
 ```
   npm install -g viage-cli
-  via create hello-world-viage
+  viage app hello-world-viage
   cd hello-world-viage
 ```
 - This will create an empty project that is all configured and ready to go. To run it type:
@@ -59,14 +59,14 @@ Besides being fast, small, and very compatible with existing libraries, Viage re
 ## Commands
 - *npm run start* - Builds and launches a Development Webserver
 - *npm run build* - Builds the project in release and outputs it to dist/
-- *via create \<project-name\>* - creates a skeleton project
-- *via addComponent \<component-name\>* - creates a new component and adds it to the project
-- *via addService \<service-name\>* - creates a new service and adds it to the project
+- *viage app \<project-name\>* - creates a skeleton project
+- *viage component \<component-name\>* - creates a new component and adds it to the project
+- *viage service \<service-name\>* - creates a new service and adds it to the project
 
 ## How To Viage
 
 ### Components and Services
-There are three basic types of Viage objects, Components and Services, and a special object called a Router
+There are three basic types of Viage objects, Components and Services, and a special object called a Router.
 
 #### Components
 Components contain HTML and other components. Components communicate down stream by calling functions directly in their children much like React does. Sometimes a parent needs to know that something changed in a child component. That can be done by emitting and event, supporting a callback API between parent and child, and notification via a Service.
@@ -78,7 +78,7 @@ Services are singletons that are usually a data repository. They should handle t
 Viage also has a quick and dirty router that is about 150 lines of code. The Router allows Single Page Apllications to be created quickly and easily. The Router maps routes to components which render into a common element in the DOM.
 
 ## Shopping List Tutorial
-The quickest way to learn via is to Walk through a simple shopping list app. You can find that here (coming soon)
+The quickest way to learn Viage is to Walk through a simple shopping list app. You can find that here (coming soon)
 
 ## API
 The Viage API is documented here (coming soon)
