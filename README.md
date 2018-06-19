@@ -78,7 +78,7 @@ Services are singletons that are usually a data repository. They should handle t
 Viage also has a quick and dirty router that is about 150 lines of code. The Router allows Single Page Apllications to be created quickly and easily. The Router maps routes to components which render into a common element in the DOM.
 
 ## Shopping List Tutorial
-The quickest way to learn Viage is to Walk through a simple shopping list app. You can find that here (coming soon)
+The quickest way to learn Viage is to walk through a simple shopping list app. You can find that [here](https://github.com/schlotg/viage-shopping-list)
 
 ## API
 The Viage API is documented here (coming soon)
