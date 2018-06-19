@@ -10,8 +10,8 @@ That is exactly the question I am trying to answer. If I just uses some reasonab
 
 - Use only Modern Web APIs that are standard across the big 4 architectures
 - Take advantage of JS / TS modern language features
-- Keep everything as simple as possible while still maintaing easy development
-- Be as comppatible as possible with already existing Javascript libraries and standards
+- Keep everything as simple as possible while still maintaining easy development
+- Be as compatible as possible with already existing Javascript libraries and standards
 - Take advantage of offline tools such as NPM, Webpack, and Typescript
 - Minimize the amount learning required
 
