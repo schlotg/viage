@@ -27,8 +27,8 @@ To test this I created a shopping list app in Angular, React, and Via. The total
 
 | Framework | Size          |
 |-----------|---------------|
-| Viage     | 19KB          |
-| Angular   | 3.884 MB      |
+| Viage     | 20KB          |
+| Angular   | 351KB         |
 | React     | (Coming soon) |
 
 
@@ -82,5 +82,5 @@ Viage also has a quick and dirty router that is about 150 lines of code. The Rou
 The quickest way to learn Viage is to walk through a simple shopping list app. You can find that [here](https://github.com/schlotg/viage-shopping-list)
 
 ## API
-The Viage API is documented here (coming soon)
+The Viage API is documented [here](docs/api.md)
 
