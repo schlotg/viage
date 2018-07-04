@@ -13,7 +13,7 @@ This will replace the HTML associated with the components element. It will add a
 this.attachments.container will contain the element specified above.
 
 ### release(): void
-This called by the system and can be called manually to destroy and cleanup the component. This will release any references to other components and call a destroy function in the class if it exists.
+This function is called by the system and can be called manually to destroy and cleanup the component. This will release any references to other components and call a destroy function in the class if it exists.
 
 ### attach(attachPoint: HTMLElement | string, replace?: boolean)
 Attach allows a component attach itself to another element. You can pass in the element to attach to, or a selector string. The optional replace parameter replaces the inner contents of an element, otherwise it is appended to the end.
@@ -40,7 +40,7 @@ Destroy a createdComponent by name.
 Clear out all the created Components
 
 ### addServiceListener<A extends Service>(service: A, event: string, cb: any)
-This adds an event listener to a service. This will automatically be removed when the component gets destroyed. This uses a intermediate class that manages the intricacies of addEventListener and its difficulties with classes and arrow functions.
+This adds an event listener to a service. This will automatically be removed when the component gets destroyed. This uses a intermediate class that manages the intricacies of addEventListener API and its difficulties with classes and arrow functions.
 
 Example use:
 ```Javascript
@@ -65,7 +65,7 @@ The service base class creates a private element that lets listeners be attached
 Dispatch event lets you dispatch a custom event with data to all your listeners
 
 ## Listener
-The intermediate listener class takes care of all the intricacies of the addEventListener. It is hard to remove a event listener once it is added if you use a arrow function or a class method. This is not meant to be used directly but is used by the Service listeners. Calling remove() on this returned class removes the event listener.
+The intermediate listener class takes care of all the intricacies of the addEventListener API. It is hard to remove a event listener once it is added if you use a arrow function or a class method. This is not meant to be used directly but is used by the Service listeners. Calling remove() on this returned class removes the event listener.
 
 The class looks like this:
 
@@ -116,7 +116,7 @@ This function configures the router with its states. Name is the url, component 
 
 As an example using the above edit state, if the url is #edit/5, then this.params.id will equal 5
 
-Here is what is should look like in code:
+Here is what the code should look like:
 
 ```Javascript
 export class ShoppingListAdd extends Component {
@@ -134,7 +134,7 @@ This function allows you to remove a state by name.
 ### setDefaultState(url: string)
 This function sets a default state.
 
-## go(url: string)
+### go(url: string)
 This function allows manual triggering of state changes.
 
 ```Javascript
@@ -142,7 +142,7 @@ This function allows manual triggering of state changes.
 ```
 If a router has been created with hooUrl = true, then you can also use #home in an anchor or link and when clicked it will be the same as calling go('#home').
 
-## back()
+### back()
 This function goes back to the previous router state. If there was not a previous state then it goes to the default state
 
 ## isCompatible()
