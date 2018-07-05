@@ -3,7 +3,7 @@
 All components need to derive off of the Component class. This class gives you the following functionality:
 
 ### Element
-Each component has a element whose named gets passed down through the constructor. You can access via this.e .
+Each component has a element whose named gets passed down through the constructor. You can access via **this.e**
 
 ### setHTML(html: string)
 This will replace the HTML associated with the components element. It will add any elements in the HTML that have the attach attribute and add them to this.attachments. As an example if the HTML contained a string like this:
@@ -16,15 +16,17 @@ this.attachments.container will contain the element specified above.
 This function is called by the system and can be called manually to destroy and cleanup the component. This will release any references to other components and call a destroy function in the class if it exists.
 
 ### attach(attachPoint: HTMLElement | string, replace?: boolean)
-Attach allows a component attach itself to another element. You can pass in the element to attach to, or a selector string. The optional replace parameter replaces the inner contents of an element, otherwise it is appended to the end.
+Attach allows a component to attach itself to another element. You can pass in the element to attach to, or a selector string. The optional replace parameter replaces the inner contents of an element, otherwise it is appended to the end.
 
 ### createComponent<A extends Component>(c: new () => A, name?: string): A
-This function creates a child component and automatically adds it to this.components. If the optional name parameter is not used then a id is created and the it is added to this.components using the id as a key
+This function creates a child component and automatically adds it to **this.components** . If the optional name parameter is not used then a **id** is created and the it is added to the **this.components** array using the **id** as a key
 
 Example:
 ```Javascript
   updateList(){
+    // remove any components
     this.clearComponents();
+    // clear out any existing inner HTML
     this.attachments.list.innerHTML = '';
     ShoppingListService.forEach(e => {
       this.createComponent(ShoppingListElement).init(e)
@@ -34,26 +36,26 @@ Example:
 ```
 
 ### destroyComponent(name: string)
-Destroy a createdComponent by name.
+Destroy a created Component by name.
 
 ### clearComponents()
 Clear out all the created Components
 
 ### addServiceListener<A extends Service>(service: A, event: string, cb: any)
-This adds an event listener to a service. This will automatically be removed when the component gets destroyed. This uses a intermediate class that manages the intricacies of addEventListener API and its difficulties with classes and arrow functions.
+This adds an event listener to a service. This will automatically be removed when the component gets destroyed. This uses a intermediate class that manages the intricacies of the **addEventListener** API and its difficulties with classes and arrow functions.
 
-Example use:
+Example:
 ```Javascript
     this.addServiceListener(ShoppingListService, 'update', () => this.updateList());
 ```
 
-The resultant intermediate class is stored in this.serviceListeners
+The resultant intermediate class is stored in **this.serviceListeners**
 
 ### forEachAttachments(cb: forEachCB)
-This is a helper function that allows you to apply a callback function on all the attachments
+This is a helper function that allows you to apply a callback function on all of the attachments
 
 ### forEachComponents(cb: forEachCB)
-This is a helper function that allows you to apply a callback function on all the child components
+This is a helper function that allows you to apply a callback function on all of the child components
 
 ## Service
 All services must derive off of the Service base class. This class gives you the following functionality:
@@ -65,7 +67,7 @@ The service base class creates a private element that lets listeners be attached
 Dispatch event lets you dispatch a custom event with data to all your listeners
 
 ## Listener
-The intermediate listener class takes care of all the intricacies of the addEventListener API. It is hard to remove a event listener once it is added if you use a arrow function or a class method. This is not meant to be used directly but is used by the Service listeners. Calling remove() on this returned class removes the event listener.
+The intermediate listener class takes care of all the intricacies of the addEventListener API. It is hard to remove a event listener once it is added if you use a arrow function or a class method. This class is not meant to be used directly but can be and is used by the Service listeners. Calling remove() on this returned class removes the event listener.
 
 The class looks like this:
 
@@ -91,7 +93,7 @@ export class Listener {
 ```
 
 ## Router
-Viage comes with a built in Router that is small but very functional. The Routers used in a app should be created up front in the app.ts. Then any component that needs to access them get one by name.
+Viage comes with a built in Hash Router that is small but very functional. The Routers used in a app, should be created up front in app.ts. Any component that needs to access them get one by name.
 
 ### createRouter(name: string, portal: HTMLDivElement, hookUrl?: boolean)
 This creates a router by the name passed in. The portal is the HTML element that the router will render into. hookUrl is a optional flag that specifies that the router will use the URL bar.
@@ -109,21 +111,23 @@ This creates a router by the name passed in. The portal is the HTML element that
 ```
 
 ### getRouter(name: string)
-GetRouter gets a previously created router by name. This allows any component to get an created router.
+GetRouter gets a previously created router by name. This allows any component to get a created router.
 
 ### addStates(states: State[])
-This function configures the router with its states. Name is the url, component is the component that will be rendered into the portal. The parameter list is an array of strings that will associated with data in the URL. The data will be added to the components params member. The component should define this member so that typescript is happy.
-
-As an example using the above edit state, if the url is #edit/5, then this.params.id will equal 5
-
-Here is what the code should look like:
-
+Where state is defined as:
 ```Javascript
-export class ShoppingListAdd extends Component {
-
-  params = {id: ''};
-  ...
+export interface State {
+  name: string;
+  component: any;
+  paramsList: string[];
+}
 ```
+
+This function configures the router with its states. **name** is the url, **component** is the component that will be rendered into the portal. The **parameterList** is an array of strings that will associated with data in the URL. The data will be added to the components params member. The component should define this member so that typescript is happy.
+
+As an example using the above **edit** state, ```Javascript  { name: 'edit', component: ShoppingListAdd,  paramsList: ['id'] } ```, if the url is **#edit/5**, then **this.params.id** will equal 5
+
+See the Shopping List Demo for more details.
 
 ### addState(state: State)
 This method allows you to add a state one at a time.
@@ -140,13 +144,13 @@ This function allows manual triggering of state changes.
 ```Javascript
   getRouter('main').go('#home');
 ```
-If a router has been created with hooUrl = true, then you can also use #home in an anchor or link and when clicked it will be the same as calling go('#home').
+If a router has been created with **hookUrl = true**, then you can also use #home in an anchor or link and when clicked it will be the same as calling go('#home').
 
 ### back()
-This function goes back to the previous router state. If there was not a previous state then it goes to the default state
+This function goes back to the previous router state. If there was not a previous state then it goes to the default state.
 
 ## isCompatible()
-This is a quick and dirty function to detect if the browser is IE. While not an exhaustive compatability check there are very few browsers in use that are not IE, Edge, Safari, Chrome, Firefox or there mobile counterparts. One of the design considerations to keep this library small, is to ignore IE support. The viage-cli creates template projects that has code that looks like this:
+This is a quick and dirty function to detect if the browser is IE. While not an exhaustive compatability check, there are very few browsers in use that are not IE, Edge, Safari, Chrome, Firefox or there mobile counterparts. One of the design considerations to keep this library small, is to ignore IE support. The viage-cli creates template projects that has code that looks like this:
 
 index.html:
 ```Javascript
@@ -188,4 +192,4 @@ if (isCompatible()) {
 
 ```
 
-This code displays Loading... if the app takes a while to execute and then displays a warning message if the browser is IE or if a exception was thrown during the initialization process. This is exposed and kept simple so that if you need a more exhaustive browser compatability check, you can easily implement one.
+This code displays Loading... if the app takes a while to execute and then displays a warning message if the browser is IE or if a exception was thrown during the initialization process. This is exposed and kept simple so that if you need a more exhaustive browser compatability check, you can easily implement one. If you want to remove the check all together, that is very easy to do as well.
