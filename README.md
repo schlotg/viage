@@ -22,15 +22,25 @@ Viage is simply 4 very tiny classes and a CLI. The CLI takes care of setting up 
 It turns out that a lot of time and effort goes into making browsers fast with the native APIs. Using them produces good results. To verify this I implemented a Viage version of the React Fiber Demo. It is at least as fast as React Fiber. You can see for yourself [here](https://github.com/schlotg/viage-sierpinski)
 
 ### Is Viage small?
-To test this I created a shopping list app in Angular, React, and Via. The total code sizes generated for each framework is shown below:
-
+To test this I created a shopping list app in Angular, React, and Viage. The total code sizes generated for each framework is shown below:
 
 | Framework | Size          |
 |-----------|---------------|
-| Viage     | 20KB          |
+| Viage     | 19KB          |
 | Angular   | 351KB         |
-| React     | (Coming soon) |
+| React     | 158KB         |
 
+For the sake of codes size and complexity comparisons, I have implemented this same app in React and Angular. You can find them and a running Viage version here:
+
+[Viage](https://schlotg.github.io/shopping-list.html#home)
+
+[React - running](https://schlotg.github.io/react-shopping-list/index)
+
+[React - project](https://github.com/schlotg/react-shopping-list)
+
+[Angular - running](https://schlotg.github.io/angular-shopping-list/home)
+
+[Angular - project](https://github.com/schlotg/angular-shopping-list)
 
 ### Is Viage easy?
 I think so. If you compare the React, Angular, and Viage versions of the Shopping List App. You will see that a similar amount of code had to be written for each framework. If anything,I think the Viage version wins at being the smallest and easiest to understand.
