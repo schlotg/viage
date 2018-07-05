@@ -13,6 +13,7 @@ While React and Angular solve a lot of problems and are amazing, I still find my
 
 * When I work with Angular, I find that its complexity is high. Because you have to use a lot of HTML directives in your HTML, there is a learning curve for yet another part of this large framework. The HTML template directives are hard to debug because you can't step into them. Passing data in and out of a component should be trivial and its not. Adding a module usually requires me to modify code in several files and almost every bit of standard functionality has a new and different Angular counterpart. For instance, adding a click handler should be as close to the DOM APIs as possible but instead you use: ```(click) ```.
 
+## A Better Way?
 So is there a better way that relies on existing DOM and JS functionality?
 
 That is exactly the question I am trying to answer. If I just use some reasonable practices and modern features, do these large frameworks really buy me anything? Here are the design principles I am using in this project:
