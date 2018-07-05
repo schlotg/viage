@@ -12,7 +12,7 @@ While React and Angular solve a lot of problems and are amazing, I still find my
 
 According to various Web stats, less than 5% of all web traffic is IE, and its market share is shrinking fast. This leaves about 95% of the world using modern up-to-date browsers. In 2018, browsers have some really nice DOM APIs that are easy to use and standard across the big 4 (Chrome, Edge, Firefox, and Safari). Modern browsers now support ES6 features like Classes, Promises, etc... Add with great tools like Typescript and Webpack, why do we need giant frameworks again?
 
-That is exactly the question I am trying to answer. If I just uses some reasonable practices and modern features, do these large frameworks really buy us anything? Here are the design principles I am using in this project:
+That is exactly the question I am trying to answer. If I just use some reasonable practices and modern features, do these large frameworks really buy me anything? Here are the design principles I am using in this project:
 
 - Use only Modern Web APIs that are standard across the big 4 browsers
 - Take advantage of JS / TS modern language features
