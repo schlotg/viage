@@ -192,4 +192,6 @@ if (isCompatible()) {
 
 ```
 
-This code displays Loading... if the app takes a while to execute and then displays a warning message if the browser is IE or if a exception was thrown during the initialization process. This is exposed and kept simple so that if you need a more exhaustive browser compatability check, you can easily implement one. If you want to remove the check all together, that is very easy to do as well.
+This code displays Loading... if the app takes a while to execute and then displays a warning message if the browser is IE or if a exception was thrown during the initialization process. When the App component is executed it renders into the **page** element replacing the Loading... message.
+
+This is exposed and kept simple so that if you need a more exhaustive browser compatability check, you can easily implement one. If you want to remove the check all together, that is easy to do as well.
