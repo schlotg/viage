@@ -27,7 +27,7 @@ That is exactly the question I am trying to answer. If I just use some reasonabl
 - Keep everything component based
 
 ## So what is Viage?
-Viage is simply 4 very tiny classes and a CLI. The CLI takes care of setting up skeleton projects. It configures Typescript and Webpack so all you have to do is start writing code.
+Viage is simply 4 very tiny classes, some design principles, and a CLI. The CLI takes care of setting up skeleton projects. It configures Typescript and Webpack so all you have to do is start writing code.
 
 ### Is Viage fast?
 It turns out that a lot of time and effort goes into making browsers fast with the native APIs. Using them produces good results. To verify this I implemented a Viage version of the React Fiber Demo. It is as least as fast as React Fiber. You can see for yourself [here](https://github.com/schlotg/viage-sierpinski)
