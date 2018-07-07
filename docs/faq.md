@@ -95,7 +95,7 @@ If you want to embeed the library into bundle.js:
     import 'jquery/dist/jquery.min.js';
 ```
 
-*You might have to open the module's folder in npm_modules to see what the directory structure is to the file your interested in importing*
+*You might have to open the module's folder in npm_modules to see what the directory structure is for the file your interested in importing*
 
 ## How do I add a test framework to Viage?
 Coming Soon
