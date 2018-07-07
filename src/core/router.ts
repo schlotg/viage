@@ -100,8 +100,10 @@ export class Router {
     hashEnd = (hashEnd < 0) ? url.length : hashEnd;
     const hash = url.slice(hashStart, hashEnd).replace('#', '');
     const state = this.states.find((state) => state.name === hash);
-    const params = url.slice(hashEnd + 1, url.length);
-    this.setState(state, params, url);
+    if (state) {
+      const params = url.slice(hashEnd + 1, url.length);
+      this.setState(state, params, url);
+    }
   }
 
   private setState(state: State, _params: any, url: string) {

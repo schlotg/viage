@@ -111,3 +111,5 @@ The quickest way to learn Viage is to walk through a simple shopping list app. Y
 ## API
 The Viage API is documented [here](docs/api.md)
 
+## FAQ
+For general information on how to do things like add a linter, go [here](docs/faq/.md)
