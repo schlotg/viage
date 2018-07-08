@@ -29,14 +29,14 @@ export class Router {
   private hookUrl = false;
   private history: string[] = [];
   private defaultState: string;
+  private currentUrl: string;
 
   constructor(portal: HTMLDivElement, hookUrl: boolean) {
     this.portal = portal;
     this.hookUrl = hookUrl;
     if(hookUrl) {
-      window.addEventListener('hashchange', () => this._go(location.href));
-      window.addEventListener('popstate', () => {
-        this.history.pop();
+      //window.addEventListener('hashchange', () => {/*this._go(location.href);*/ console.log('here1'); });
+      window.addEventListener('popstate', (e) => {
         this._go(location.href);
       });
     }
@@ -58,68 +58,69 @@ export class Router {
   }
 
   setDefaultState(url: string){
-    if (this.hookUrl && location.href.indexOf('#') !== -1) {
-      this._go(location.href);
-    } else {
-      this.go(url);
-    }
+    this.defaultState = url;
+    //this.go(url);
   }
 
-  go(url: string) {
-    if (this.hookUrl) {
-      location.href = url;
-    } else {
+  go(_url?: string) {
+    let url = _url || this.defaultState;
+    if (!this.currentUrl) {
+      url = (this.isValidState(_url)) ? _url : this.defaultState;
+    }
+    if (this.currentUrl !== url){
+      this.history.push(url);
       this._go(url);
     }
   }
 
-  back(){
-    if (this.hookUrl) {
-      if (this.history.length) {
-        this.history.pop();
-        history.back();
-      } else if (this.defaultState) {
-        this._go(this.defaultState);
-      }
-    } else {
-      if (this.history.length) {
-        this.history.pop();
-        const url = this.history[this.history.length - 1];
-        if (url) {
-          this._go(url);
-        }
-      } else if (this.defaultState) {
-        this._go(this.defaultState);
-      }
+  back() {
+    if (this.history.length) {
+      this.history.pop();
+      this.hookUrl
+      const url = this.history[this.history.length - 1];
+      this._go(url || this.defaultState);
+    } else if (this.defaultState) {
+      this._go(this.defaultState);
     }
   }
 
-  private _go(url: string) {
+  private isValidState(url: string) {
+    const result = this.stripOutHash(url);
+    const state = this.states.find((state) => state.name === result.hash);
+    return !!state;
+  }
+
+  private stripOutHash(url: string) {
     const hashStart = url.indexOf('#');
     let hashEnd = url.indexOf('/', hashStart);
     hashEnd = (hashEnd < 0) ? url.length : hashEnd;
     const hash = url.slice(hashStart, hashEnd).replace('#', '');
-    const state = this.states.find((state) => state.name === hash);
+    return { hash: hash, hashEnd: hashEnd };
+  }
+
+  private _go(url: string) {
+    const result = this.stripOutHash(url);
+    const state = this.states.find((state) => state.name === result.hash);
     if (state) {
-      const params = url.slice(hashEnd + 1, url.length);
+      const params = url.slice(result.hashEnd + 1, url.length);
       this.setState(state, params, url);
     }
   }
 
   private setState(state: State, _params: any, url: string) {
     const currentState = this.currentState || {} as State;
-    if(state.name !== currentState.name) {
+    if (this.currentUrl !== url) {
+      this.currentUrl = url;
+      location.href = url;
       this.portal.innerHTML = '';
       if (currentState.component) {
         currentState.component.release();
       }
       const params = (typeof _params === 'string') ? this.parseParams(state, _params) : _params;
-      const combined = Object.assign({}, params);
       const component: Component = new state.component(params);
       component.attach(this.portal);
       const internalState = new InternalState(state, params, url, component);
       this.currentState = internalState;
-      this.history.push(url);
     }
   }
 
