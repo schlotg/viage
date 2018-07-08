@@ -1,5 +1,17 @@
 # Viage FAQ
 
+## How do I update Viage
+In the project that you want to update it in, type the following:
+```Javascript
+    npm install --save-dev viage
+```
+
+## How do I update the Viage CLI
+From any command line, type the following:
+```Javascript
+    npm install -g viage-cli
+```
+
 ## How do I add a simple server, besides the webpack-development server, so I can test release builds without deploying
 You can add a Node server quickly and easily to your project.
 * Open a command line in your project
