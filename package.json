@@ -1,12 +1,13 @@
 {
   "name": "viage",
-  "version": "1.0.5",
+  "version": "1.2.0",
   "description": "Modern, minimal, fast web framework",
-  "main": "./dist/index.js",
+  "main": "./dist/core/index.js",
   "homepage": "https://github.com/schlotg/viage",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/types/core/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "node \"rm-dist\" && tsc",
+    "test": "jest"
   },
   "keywords": [
     "Viage",
@@ -19,6 +20,26 @@
   "author": "Greg Schlottmann",
   "license": "MIT",
   "dependencies": {
+    "fs-jetpack": "^2.1.0",
     "typescript": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.1.6",
+    "jest": "^23.4.1",
+    "ts-jest": "^23.0.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }

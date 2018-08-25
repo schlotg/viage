@@ -103,7 +103,7 @@ Components contain HTML and other components. Components communicate down stream
 Services are singletons that are usually a data repository. They should handle the setting and getting of data and provide a mechanism to notify everyone else when the data has changed. The Service base class has some helpers for adding listeners and dispatching events.
 
 ### Router
-Viage also has a quick and dirty router that is about 150 lines of code. This is a Hash Router and it allows Single Page Apllications to be created quickly and easily. The Router maps routes to components which render into a common element in the DOM.
+Viage also has a quick and dirty router that is about 225 lines of code. This is a configurable Router and can be a HASH, SATANDALONE, and LOCATION router. It allows Single Page Apllications to be created quickly and easily. The Router maps routes to components which render into a common element in the DOM. For more information see the [API Docs](docs/api.md) and some router design considerations [here](docs/api.md).
 
 ## Shopping List Tutorial
 The quickest way to learn Viage is to walk through a simple shopping list app. You can find that [here](https://github.com/schlotg/viage-shopping-list)

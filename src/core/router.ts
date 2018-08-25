@@ -1,153 +1,225 @@
 import { Component } from './component';
+import { Listener } from './Listener';
 
 export interface State {
   name: string;
   component: any;
-  paramsList: string[];
+  type: 'DEFAULT' | 'NORMAL';
+}
+
+interface StateInfo {
+  name: string;
+  data: any;
+  url: string;
 }
 
 class InternalState {
   name: string;
   component: any;
-  paramsList: string[];
-  params: any;
+  data: any;
   url: string;
-
-  constructor(state: State, params: any, url: string, component: any) {
-    this.name = state.name;
-    this.component = component;
-    this.paramsList = this.paramsList;
-    this.params = params;
-  }
+  componentInstance?: any;
 }
 
 export class Router {
 
-  private portal: HTMLDivElement;
-  private states: State[] = [];
-  private currentState: InternalState;
-  private hookUrl = false;
-  private history: string[] = [];
-  private defaultState: string;
-  private currentUrl: string;
+  protected portal: HTMLElement;
+  protected states: { [index: string]: State } = {};
+  protected currentState: InternalState;
+  protected type: 'HASH' | 'LOCATION' | 'STANDALONE';
+  protected history: string[] = [];
+  protected defaultState: State;
+  protected listener: Listener;
+  protected name: string;
 
-  constructor(portal: HTMLDivElement, hookUrl: boolean) {
+  constructor(portal: HTMLElement, type: 'HASH' | 'LOCATION' | 'STANDALONE', name: string) {
     this.portal = portal;
-    this.hookUrl = hookUrl;
-    if(hookUrl) {
-      //window.addEventListener('hashchange', () => {/*this._go(location.href);*/ console.log('here1'); });
-      window.addEventListener('popstate', (e) => {
-        this._go(location.href);
-      });
+    this.type = type;
+    this.name = name;
+    if (type === 'HASH') {
+      this.listener = new Listener(window, 'popstate', (e: PopStateEvent) => this.go(location.href));
     }
+  }
+
+  release () {
+    this.listener && this.listener.remove();
+    this.states = {};
+    this.history = [];
+    this.portal = undefined;
+  }
+
+  // decode a URL coming in
+  // the are in the form '#?s=<state>;d=<data>;
+  protected decodeUrl (url: string): StateInfo {
+    const start = url.indexOf('?') + 1;
+    if (start) {
+      const str = url.slice(start);
+      const parts = str.split(';');
+      if (parts.length) {
+        const stateParts = parts[0].split('=') || [];
+        const dataParts = (parts[1] && parts[1].split('=')) || [];
+        const name = stateParts[1] ? decodeURIComponent(stateParts[1]) : '';
+        const data = dataParts[1] ? JSON.parse(decodeURIComponent(dataParts[1])) : {};
+        return { name, data, url };
+      }
+    }
+    return {} as StateInfo;
+  }
+
+  protected activateState(state: InternalState) {
+    const currentState = this.currentState || {} as InternalState;
+    if (currentState.url !== state.url) {
+      // clear out the old state
+      this.portal.innerHTML = '';
+      if (currentState.componentInstance) {
+        currentState.componentInstance.release();
+        currentState.componentInstance = null;
+      }
+      // create the new state
+      const component: Component = new state.component();
+      component.setRouter(this);
+      component.attach(this.portal);
+      // call init on the component if it exists
+      const _component = component as any;
+      if (_component.init) {
+        _component.init(state.data);
+      }
+      state.componentInstance = component;
+      // set the current state
+      this.currentState = state;
+      if (this.type === 'STANDALONE') {
+        this.history.push(state.url);
+      }
+    }
+  }
+
+  protected error(msg: string, url: string) {
+    console.error(msg);
+    this.portal.innerHTML = msg;
+    const currentState = this.currentState || {} as InternalState;
+    if (currentState.componentInstance) {
+      currentState.componentInstance.release();
+      currentState.componentInstance = null;
+    }
+    this.currentState = {url, name: 'Error' } as InternalState;
+    if (this.type === 'STANDALONE') {
+      this.history.push(url);
+    }
+  }
+
+  getName() {
+    return this.name;
+  }
+
+  getType() {
+    return this.type;
   }
 
   addStates(states: State[]) {
-    this.states = states;
-  }
-
-  addState(state: State) {
-    this.states.push(state);
+    states.forEach((state: State) => {
+      this.states[state.name] = state;
+      if (state.type === 'DEFAULT') {
+        this.defaultState = state;
+      }
+    });
   }
 
   removeState(name: string) {
-    const i = this.states.findIndex((state) => state.name === name);
-    if(i !== -1) {
-      this.states.splice(i, 1);
+    if (name && this.states[name]) {
+      delete this.states[name];
+      this.defaultState = (this.defaultState.name === name) ? null : this.defaultState;
     }
   }
 
-  setDefaultState(url: string){
-    this.defaultState = url;
-    //this.go(url);
+  clearStates() {
+    this.states = {};
+    this.defaultState = null;
   }
 
-  go(_url?: string) {
-    let url = _url || this.defaultState;
-    if (!this.currentUrl) {
-      url = (this.isValidState(_url)) ? _url : this.defaultState;
+  start() {
+    if (this.type !== 'STANDALONE') {
+      this.go(location.href);
+    } else if (this.defaultState) {
+      const url = this.createUrl(this.defaultState.name);
+      this.go(url);
     }
-    if (this.currentUrl !== url){
-      this.history.push(url);
-      this._go(url);
+  }
+
+  createUrl<T>(state: string, data?: T){
+    let escState = encodeURIComponent(state);
+    let escData = encodeURIComponent(JSON.stringify(data));
+    let url = (this.type === 'HASH') ? `#?s=${escState};` : `?s=${escState};`;
+    url += (data) ? `d=${escData};` : '';
+    return url;
+  }
+
+  go(url: string): boolean {
+    if (!this.currentState || this.currentState.url !== url) {
+      let stateInfo = this.decodeUrl(url);
+      let state = this.states[stateInfo.name];
+      if (!state) { console.warn(`Viage Router: State not found. State:${stateInfo.name} Url:${url}`); }
+      if (!state && !this.defaultState) {
+        this.error(`Viage Router: State not found for url${url} and no Default State configured`, url);
+      } else {
+        state = state || this.defaultState;
+        let internalState = { name: state.name, component: state.component, data: stateInfo.data, url };
+        this.activateState(internalState);
+        if (this.type !== 'STANDALONE') {
+          const current = location.href;
+          // only assign this to location if it is not already there
+          if (current.indexOf(url) === -1) {
+            location.href = url;
+          }
+        }
+        return true;
+      }
     }
+    return false;
   }
 
   back() {
-    if (this.history.length) {
+    if (this.type !== 'STANDALONE') {
+      history.back();
+    } else {
       this.history.pop();
-      this.hookUrl
-      const url = this.history[this.history.length - 1];
-      this._go(url || this.defaultState);
-    } else if (this.defaultState) {
-      this._go(this.defaultState);
+      const next = this.history.length ? this.history.length - 1 : 0;
+      this.go(this.history[next]);
     }
-  }
-
-  private isValidState(url: string) {
-    const result = this.stripOutHash(url);
-    const state = this.states.find((state) => state.name === result.hash);
-    return !!state;
-  }
-
-  private stripOutHash(url: string) {
-    const hashStart = url.indexOf('#');
-    let hashEnd = url.indexOf('/', hashStart);
-    hashEnd = (hashEnd < 0) ? url.length : hashEnd;
-    const hash = url.slice(hashStart, hashEnd).replace('#', '');
-    return { hash: hash, hashEnd: hashEnd };
-  }
-
-  private _go(url: string) {
-    const result = this.stripOutHash(url);
-    const state = this.states.find((state) => state.name === result.hash);
-    if (state) {
-      const params = url.slice(result.hashEnd + 1, url.length);
-      this.setState(state, params, url);
-    }
-  }
-
-  private setState(state: State, _params: any, url: string) {
-    const currentState = this.currentState || {} as State;
-    if (this.currentUrl !== url) {
-      this.currentUrl = url;
-      location.href = url;
-      this.portal.innerHTML = '';
-      if (currentState.component) {
-        currentState.component.release();
-      }
-      const params = (typeof _params === 'string') ? this.parseParams(state, _params) : _params;
-      const component: Component = new state.component(params);
-      component.attach(this.portal);
-      const internalState = new InternalState(state, params, url, component);
-      this.currentState = internalState;
-    }
-  }
-
-  private parseParams(state: State, params: string) {
-    const result: any = {};
-    params = params || '';
-    let paramIndex = 0, stringIndex = 0;
-    while (stringIndex < params.length) {
-      let end = params.indexOf('/', stringIndex);
-      end = (end > 0) ? end : params.length;
-      const value = params.slice(stringIndex, end);
-      result[state.paramsList[paramIndex]] = value;
-      stringIndex += end;
-    }
-    return result;
   }
 }
 
 const routers: {[index: string]: Router} = {};
+let locationOrHash = false;
 
 export function getRouter(name: string) {
   return routers[name];
 }
 
-export function createRouter(name: string, portal: HTMLDivElement, hookUrl?: boolean) {
-  if(!routers[name]) {
-    routers[name] = new Router(portal, hookUrl);
+// create a router, pass in the portal as an element or by selector string
+export function createRouter(name: string, portal: HTMLElement | string, type: 'LOCATION' | 'HASH' | 'STANDALONE') {
+  if (!routers[name]) {
+    if (locationOrHash && (type === 'HASH' || type === 'LOCATION')) {
+      console.error('Viage Router: Only one HASH or LOCATION Router can exist at a time');
+    } else {
+      locationOrHash = (type === 'HASH' || type === 'LOCATION');
+      const e = (typeof portal === 'string') ? document.querySelector(portal) as HTMLElement: portal;
+      routers[name] = new Router(e, type, name);
+    }
+  } else {
+    console.error(`Viage Router: Router with Name: ${name} already exists`);
   }
   return routers[name];
+}
+
+// destroy a router
+export function destroyRouter(name: string) {
+  if (routers[name]) {
+    const router = routers[name];
+    const type = router.getType();
+    if (type === 'HASH' || type === 'LOCATION') {
+      locationOrHash = false;
+    }
+    router.release();
+    delete routers[name];
+  }
 }

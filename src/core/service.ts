@@ -1,7 +1,7 @@
 import { Listener } from './listener';
 
 export class Service {
-  private e = document.createElement('service');
+  protected e = document.createElement('service');
 
   addEventListener(event: string, cb: any) : Listener {
     return new Listener(this.e, event, cb);
