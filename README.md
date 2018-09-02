@@ -87,6 +87,7 @@ I think so. If you compare the React, Angular, and the Viage versions of the Sho
 - *npm run start* - Builds and launches a Development Webserver
 - *npm run build* - Builds the project in release and outputs it to dist/
 - *npm run build-embedded* - Builds the project in release and outputs it to dist/ and embeds the bundle.js into the HTML
+- *npm run test* - Launches ts-jest and runs all the Jest tests that are in the tests folder
 - *viage app \<project-name\>* - creates a skeleton project
 - *viage component \<component-name\>* - creates a new component and adds it to the project
 - *viage service \<service-name\>* - creates a new service and adds it to the project
@@ -107,6 +108,15 @@ Viage also has a quick and dirty router that is about 225 lines of code. This is
 
 ## Shopping List Tutorial
 The quickest way to learn Viage is to walk through a simple shopping list app. You can find that [here](https://github.com/schlotg/viage-shopping-list)
+
+## Testing
+When using the Viage CLI to create a new project, it creates all the hooks necessary to start writing tests with ts-jest right out of the box. ts-jest is a Tyepscript version of Jest. All you have to do is add your tests to the test directory. The file name must have .test in it somewhere. To run tests type:
+
+```Javascript
+  npm run test
+```
+
+For examples checkout the tests in the Shopping List Tutorial. There is plenty of great documentation at the [Jest](https://jestjs.io/en/) website for info on how to Jest.
 
 ## API
 The Viage API is documented [here](docs/api.md)
