@@ -88,6 +88,7 @@ I think so. If you compare the React, Angular, and the Viage versions of the Sho
 - *npm run build* - Builds the project in release and outputs it to dist/
 - *npm run build-embedded* - Builds the project in release and outputs it to dist/ and embeds the bundle.js into the HTML
 - *npm run test* - Launches ts-jest and runs all the Jest tests that are in the tests folder
+- *npm run serve* - Launches an express server to serve the contents of the dist folder. This allows testing of a release build
 - *viage app \<project-name\>* - creates a skeleton project
 - *viage component \<component-name\>* - creates a new component and adds it to the project
 - *viage service \<service-name\>* - creates a new service and adds it to the project

@@ -31,11 +31,15 @@ You can add a Node server quickly and easily to your project.
 * Open a command line in your project
 * ```npm install --save-dev tslint```
 * ```npx tslint --init```
-* Add the following to your pacakge.json scripts section:
+* Add the following to your package.json scripts section:
 ```Javascript
     "lint": "tslint -c tslint.json 'src/**/*.ts'"
 ```
 * Now whenever you want to lint type: ``` npm run lint ```
+
+## How do I change the favicon?
+* Replace the favicon.png file in the src folder with your own 32x32 png image with the same name
+* ```npm run build```
 
 ## How do I add Font Awesome to a Viage project?
 * Open a command line in your project
