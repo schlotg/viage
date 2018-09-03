@@ -4,6 +4,7 @@ All components need to derive off of the Component class. This class gives you t
 
 Some usage notes:
 - The base constructor must have a tag name passed into it. A DOM element by this name is constructed and stored in **this.e**
+- Implement and use a *init()* function to configure your components. This is a great place to pass in configuration data, etc... The router will use the init function to pass in state data when a state change is detected. The constructors should have minimal configuration happening in them
 - Use the attach method to attach this component to an existing DOM element
 - Use the attach attribute in your HTML to automatically to attach elements to this component. They will show up in **this.attachments** which is a map with the attach name as the key
 - Use the createComponent() method to create and automatically add components to the component. Added Components will show up in **this.components** which is a map with the component name as a key
