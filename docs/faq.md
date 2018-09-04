@@ -12,20 +12,12 @@ From any command line, type the following:
     npm install -g viage-cli
 ```
 
-## How do I add a simple server, besides the webpack-development server, so I can test release builds without deploying
-You can add a Node server quickly and easily to your project.
-* Open a command line in your project
-* ```npm install express```
-* Create a file in your project called server.js and add the following code to it:
-```Javascript
-    const express = require('express');
-    const app = express();
-    app.use(express.static('dist')); // serve the dist/ folder statically
-    app.listen(3000, () => console.log('listening on port 3000!, http:://localhost:3000/'));
+## How do I add a simple server, besides the webpack-development server, so I can test release builds without deploying?
+Viage CLI projects already come with this option. Just type:
 ```
-* Save the file
-* ``` npm run build && node server ```
-* Open [http://localhost:3000/](http://localhost:3000/) in your browser
+    npm run build
+    npm run serve
+```
 
 ## How do I add a linter to a Viage project?
 * Open a command line in your project
@@ -113,4 +105,48 @@ If you want to embeed the library into bundle.js:
 
 *You might have to open the module's folder in npm_modules to see what the directory structure is for the file your interested in importing*
 
+## How do I add an Image to a Viage Project
+Images can be loaded and bundled into bundle.js. When using the url-loader, if the image is less than 8k it is bundled and inlined using base64 encoding. If the image is bigger than 8K then it is hashed, renamed to the hash, and copied to to dist directory. References to that image in index.css files will be automatically altered to match the hashed file name. For Examples on how to do this see the (Viage Shopping List Demo app)[https://github.com/schlotg/viage-shopping-list]
 
+Here are several ways you can get images into your Viage App:
+
+* Specify the image in your HTML just like normally would. This will cause the browser to load it and you will get no benefits from the url-loader. However you will need to add some mechanism to copy the file into the dist directory on builds. Webpack provides a [file-copy plugin](https://webpack.js.org/plugins/copy-webpack-plugin/) to do just that. It will need to be installed and configured.
+
+*Note that links to assets already served on another server will just work*
+
+* Reference the file in index.css and add it to a style that can be applied to elements that need the image:
+
+```css
+    .logo-img {
+        background-color: url("images/logo.png");
+    }
+```
+In this case the images/logo.png will be automatically grabbed by the url loader and either inlined or copied to the dist folder with a hashed name. The references to this file in index.css will be updated to either the inlined file or to the new hashed name.
+
+* Inject images into dynamically generated components directly. This is necessary when using images directly in a component's HTML strings. To make this work, import the image at the top of the file and then use the imported reference in the HTML string. In the example below, logo.png is imported into a variable called logo. logo is then used as a template parameter and assigned to the src attribute in an HTML img tag.
+
+```Javascript
+import { Component }from 'viage';
+import * as logo from '../logo.png';
+
+  export class Toolbar extends Component {
+    constructor() {
+      super('toolbar');
+    }
+    init() {
+      this.setHTML(`
+        <div class="toolbar">
+            <img src="${logo.default}" width="32px"/>
+         </div>
+      `);
+      return this;
+    }
+  }
+```
+If you need to adjust the image inlining size, that can be found in webpack.common.js at this line:
+
+```Javascript
+    test: /\.(png|svg|jpg|gif)$/i,
+    use: [ { loader: 'url-loader', options: { limit: 8192 } } ]
+```
+In this case everything below 8K is inlined and everything above will copied to the build directory and referenced.
