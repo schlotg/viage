@@ -1,4 +1,4 @@
-import { Router, createRouter, getRouter, State, destroyRouter } from '../src/core/router';
+import { Router, createRouter, getRouter, State, destroyRouter, StateInfo } from '../src/core/router';
 import { Component } from '../src/core/component';
 
 class InternalState {
@@ -13,6 +13,7 @@ let e: HTMLElement;
 
 // // Derive off of Router so we can access functions and test properly
 class TestRouter extends Router {
+
   constructor (type?: 'HASH' | 'LOCATION' | 'STANDALONE' ) {
     super(e, type || 'STANDALONE', 'Test');
   }
@@ -45,6 +46,12 @@ class TestRouter extends Router {
   }
   setHistory(url: string) {
     this.history.push(url);
+  }
+  _go(url: string, internalState: InternalState) {
+    super._go(url, internalState);
+  }
+  getStateChangedCallback () {
+    return this.stateChangedCallback;
   }
 }
 
@@ -403,4 +410,37 @@ test('back() should call pop last history entry and call go if STANDALONE router
   expect(destUrl).toEqual(pushUrl);
   mockGo.mockRestore();
   router.release();
+});
+
+test('setStateChangedCallback should call before the router state change and actually trigger when the promise is resolved', (done) => {
+  const router = new TestRouter('HASH');
+  const states: State[] = [
+    {name: 'state1', component: TestComponent, type: 'DEFAULT' },
+    {name: 'state2', component: TestComponent, type: 'NORMAL' },
+  ];
+  const url = router.createUrl('state1', {});
+  router.addStates(states);
+  const mock = jest.spyOn(router, '_go');
+  router.setStateChangedCallback((stateinfo: StateInfo) => {
+    return new Promise((resolve) => {
+      expect(mock).not.toBeCalled();
+      resolve();
+      setTimeout(() => {
+        expect(mock).toBeCalled();
+        mock.mockRestore();
+        router.release();
+        done();
+      }, 500);
+    });
+  });
+  router.go(url);
+});
+
+test('clearStateChangedCallback should clear out the callback', () => {
+  const router = new TestRouter('HASH');
+  router.setStateChangedCallback((stateinfo: StateInfo) => {
+    return new Promise((resolve) => resolve());
+  });
+  router.clearStateChangedCallback();
+  expect(router.getStateChangedCallback()).toBeFalsy();
 });

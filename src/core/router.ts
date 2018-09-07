@@ -7,7 +7,9 @@ export interface State {
   type: 'DEFAULT' | 'NORMAL';
 }
 
-interface StateInfo {
+export type StateChangedCallback = (stateInfo: StateInfo) => Promise<void>;
+
+export interface StateInfo {
   name: string;
   data: any;
   url: string;
@@ -31,6 +33,7 @@ export class Router {
   protected defaultState: State;
   protected listener: Listener;
   protected name: string;
+  protected stateChangedCallback: StateChangedCallback;
 
   constructor(portal: HTMLElement, type: 'HASH' | 'LOCATION' | 'STANDALONE', name: string) {
     this.portal = portal;
@@ -153,8 +156,27 @@ export class Router {
     return url;
   }
 
+  protected _go(url: string, internalState: InternalState) {
+    this.activateState(internalState);
+    if (this.type !== 'STANDALONE') {
+      const current = location.href;
+      // only assign this to location if it is not already there
+      if (current.indexOf(url) === -1) {
+        location.href = url;
+      }
+    }
+  }
+
+  clearStateChangedCallback() {
+    this.stateChangedCallback = null;
+  }
+
+  setStateChangedCallback(cb: StateChangedCallback) {
+    this.stateChangedCallback = cb;
+  }
+
   go(url: string): boolean {
-    if (!this.currentState || this.currentState.url !== url) {
+    if (!this.currentState || url.indexOf(this.currentState.url) === -1) {
       let stateInfo = this.decodeUrl(url);
       let state = this.states[stateInfo.name];
       if (!state) { console.warn(`Viage Router: State not found. State:${stateInfo.name} Url:${url}`); }
@@ -163,13 +185,12 @@ export class Router {
       } else {
         state = state || this.defaultState;
         let internalState = { name: state.name, component: state.component, data: stateInfo.data, url };
-        this.activateState(internalState);
-        if (this.type !== 'STANDALONE') {
-          const current = location.href;
-          // only assign this to location if it is not already there
-          if (current.indexOf(url) === -1) {
-            location.href = url;
-          }
+        // give the oppertunity to do animations before the the state
+        // change actually happens
+        if (this.stateChangedCallback) {
+          this.stateChangedCallback(stateInfo).then(() => this._go(url, internalState));
+        } else {
+          this._go(url, internalState);
         }
         return true;
       }

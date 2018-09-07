@@ -181,6 +181,9 @@ See the Shopping List Demo for more details.
 ### back()
 This function goes back to the previous router state. If there was not a previous state then it goes to the default state.
 
+### clearStateChangedCallback()
+Clears a state change callback if set. To set use **setStateChangedCallback()**
+
 ### clearStates()
 Clears out all the existing states in a router.
 
@@ -210,6 +213,27 @@ For Location and Hash routers, you can also trigger a state change by using sett
 
 ### removeState(name: string)
 This function allows you to remove a state by name.
+
+### setStateChangedCallback(cb: StateChangedCallback)
+This function allows you to install a callback that gets fired everytime there is a state change. The callback should return a promise and when the callback is done doing a task it will trigger the state change by calling resolve on the returned promise. This allows you to do animations between state changed and debug router state changes.
+
+**StateChangedCallback** has the following prototype:
+```Javascript
+    export type StateChangedCallback = (stateInfo: StateInfo) => Promise<void>;
+```
+Here is an example of its use:
+```Javascript
+    // add a handler for router state changes
+    router.setStateChangedCallback((stateInfo: StateInfo) => {
+      return new Promise((resolve) => {
+        console.log('Router State Change is about to happen', stateInfo);
+        resolve(); // actually trigger the state change
+        console.log('Router State Change just happened');
+      });
+    };
+```
+For more information see the Viage Shopping List tutorial
+
 
 ### start()
 Tells a router to activate itself and start routing. This should be called as soon as the Router is configured.
