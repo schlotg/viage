@@ -1,5 +1,5 @@
 import { Component } from './component';
-import { Listener } from './Listener';
+import { Listener } from './listener';
 
 export interface State {
   name: string;
