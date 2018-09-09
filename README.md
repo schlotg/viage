@@ -123,4 +123,4 @@ For examples checkout the tests in the Shopping List Tutorial. There is plenty o
 The Viage API is documented [here](docs/api.md)
 
 ## FAQ
-For general information on how to do things like add a linter, go [here](docs/faq/.md)
+For general information on how to do things like add a linter, go [here](docs/faq.md)
