@@ -1,4 +1,4 @@
-/** Viage Version 1.2.2 */
+/** Viage Version 1.3.2 */
 /**
 MIT License
 
