@@ -34,6 +34,7 @@ export class Router {
   protected listener: Listener;
   protected name: string;
   protected stateChangedCallback: StateChangedCallback;
+  protected starting = false;
 
   constructor(portal: HTMLElement, type: 'HASH' | 'LOCATION' | 'STANDALONE', name: string) {
     this.portal = portal;
@@ -52,17 +53,21 @@ export class Router {
   }
 
   // decode a URL coming in
-  // the are in the form '#?s=<state>;d=<data>;
+  // the are in the form '#<state>;<data> or ?<state>;<data>
   protected decodeUrl (url: string): StateInfo {
-    const start = url.indexOf('?') + 1;
+    const start = (this.type === 'HASH') ? url.indexOf('#') + 2 : url.indexOf('?') + 2 ;
     if (start) {
       const str = url.slice(start);
       const parts = str.split(';');
       if (parts.length) {
-        const stateParts = parts[0].split('=') || [];
-        const dataParts = (parts[1] && parts[1].split('=')) || [];
-        const name = stateParts[1] ? decodeURIComponent(stateParts[1]) : '';
-        const data = dataParts[1] ? JSON.parse(decodeURIComponent(dataParts[1])) : {};
+        let name, data;
+        try {
+          name = parts[0] ? decodeURIComponent(parts[0]) : '';
+          data = parts[1] ? JSON.parse(decodeURIComponent(parts[1])) : {};
+        } catch(e) {
+          console.error('Viage:Router.decodeUrl(): Error decoding URL:', url);
+          name = data = null;
+        }
         return { name, data, url };
       }
     }
@@ -141,18 +146,29 @@ export class Router {
 
   start() {
     if (this.type !== 'STANDALONE') {
+      this.starting = true;
       this.go(location.href);
     } else if (this.defaultState) {
       const url = this.createUrl(this.defaultState.name);
       this.go(url);
     }
+    this.starting = false;
   }
 
-  createUrl<T>(state: string, data?: T){
-    let escState = encodeURIComponent(state);
-    let escData = encodeURIComponent(JSON.stringify(data));
-    let url = (this.type === 'HASH') ? `#?s=${escState};` : `?s=${escState};`;
-    url += (data) ? `d=${escData};` : '';
+  createUrl<T>(state: string, data?: T) {
+    let escState, json, escData;
+    try {
+      escState = encodeURIComponent(state);
+      json = JSON.stringify(data);
+      escData = encodeURIComponent(json);
+    } catch (e) {
+      console.error('Viage:Router.createURL(): Error creating URL:', state, data);
+      json = null;
+      escData = null;
+      escState = this.defaultState && this.defaultState.name || '';
+    }
+    let url = (this.type === 'HASH') ? `#/${escState}` : `?/${escState}`;
+    url += (data && json !== '{}' && json !== '[]' && json !== 'undefined' && json !== 'null') ? `;${escData}` : '';
     return url;
   }
 
@@ -161,7 +177,8 @@ export class Router {
     if (this.type !== 'STANDALONE') {
       const current = location.href;
       // only assign this to location if it is not already there
-      if (current.indexOf(url) === -1) {
+      const currentLocation = current.substring(current.indexOf(url));
+      if (currentLocation !== url) {
         location.href = url;
       }
     }
@@ -176,6 +193,7 @@ export class Router {
   }
 
   go(url: string): boolean {
+    // only do something we havent been set yet or if we are going to somewhere new
     if (!this.currentState || url.indexOf(this.currentState.url) === -1) {
       let stateInfo = this.decodeUrl(url);
       let state = this.states[stateInfo.name];
@@ -184,13 +202,20 @@ export class Router {
         this.error(`Viage Router: State not found for url${url} and no Default State configured`, url);
       } else {
         state = state || this.defaultState;
-        let internalState = { name: state.name, component: state.component, data: stateInfo.data, url };
-        // give the oppertunity to do animations before the the state
-        // change actually happens
-        if (this.stateChangedCallback) {
-          this.stateChangedCallback(stateInfo).then(() => this._go(url, internalState));
+        const newUrl = this.createUrl(state.name, stateInfo.data);
+        const href = location.href;
+        const oldUrl = href.slice(href.indexOf(this.type === 'HASH' ? '#' : '?'));
+        let internalState = { name: state.name, component: state.component, data: stateInfo.data, url: newUrl };
+        // if we are starting and the url needs to be changed just change it
+        if (this.starting && this.type === 'LOCATION' && oldUrl !== newUrl) {
+          location.href = newUrl;
+        // else if we have a different url or we are starting apply the new state
         } else {
-          this._go(url, internalState);
+          if (this.stateChangedCallback) {
+            this.stateChangedCallback(stateInfo).then(() => this._go(newUrl, internalState));
+          } else {
+            this._go(newUrl, internalState);
+          }
         }
         return true;
       }

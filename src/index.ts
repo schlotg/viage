@@ -1,5 +1,5 @@
-/** Viage Version 1.3.9 */
-/**
+/*! Viage Version 1.3.10 */
+/*!
 MIT License
 
 Copyright (c) 2018 Gregory Schlottmann

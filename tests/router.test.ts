@@ -133,7 +133,7 @@ test('Should decode a URL properly', () => {
   const router = new TestRouter();
   const name = 'test/state';
   const data = { pi: 3.14159, foo: 'bar'};
-  const result = router.testDecodeUrl(`http://test.com?s=${encodeURIComponent(name)};d=${encodeURIComponent(JSON.stringify(data))};`);
+  const result = router.testDecodeUrl(`http://test.com?/${encodeURIComponent(name)};${encodeURIComponent(JSON.stringify(data))};`);
   expect(result.name).toEqual(name);
   expect(result.data).toEqual(data);
   router.release();
