@@ -26,7 +26,7 @@ This type of Router just loads a new location but when the application loads the
 This type of router doesn't use the Location or History objects and must be called directly to go to a new location or to go back. It simply renders the result of the current state into a designated portal.
 
 ### Problems the above routers suffer from (except standalone)
-Some libraries, such as Bootstrap, assign '#' to anchors and then capture the click event. When the object is clicked, this adds a history entry. Going back must cycle through these hash entries which can be annoying and unexpected behavior. Avoid code that creates hash entries in the browser's history.
+Some libraries, such as Bootstrap, assign '#' to anchors and then capture the click event. When the object is clicked, this adds a history entry. To go back, one must cycle through these hash entries which can be annoying and a unexpected behavior. Avoid code that creates hash entries in the browser's history.
 
 ### Misc
 - All of the above routers, expect standalone, should look at the location when they start and change to the appropriate state on load. This allows links to be stored that take the user directly to the state from which the link was captured.
