@@ -1,6 +1,9 @@
 # Welcome to Viage.js
 Why does the world need another Javascript Framework? Well it doesn't, and that's why this isn't a framework at all but rather some minimal base classs, tools, and a small set of practices and principles.
 
+# Viage Website
+Please go [here](https://schlotg.github.io/) for a web version of the documentation and tutorial
+
 ## It is 2018
 Am I the only one that is dismayed at the current state of Web development? If I want to use use Bootstrap with Angular, I have to install a special Angular version of the library. If I decide to use Botstrap with React, I need to use the React version. There seems to be at least 3 versions of every library, a React, Angular, and native Javascript version. Adding to the frustration, there are the native DOM APIs and then different APIS for Angular, React, and whatever the latest framework of the month is.
 
