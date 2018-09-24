@@ -1,20 +1,19 @@
 # Viage API
 ## Components
-All components need to derive off of the Component class. This class gives you the functionality give you the methods below via inheritance.
+All components need to derive off of the Component class. This class gives you the functionality below via inheritance.
 
 Some usage notes:
 - The base constructor must have a tag name passed into it. A DOM element by this name is constructed and stored in **this.e**
 - Implement and use a *init()* function to configure your components. This is a great place to pass in configuration data, etc... The router will use the init function to pass in state data when a state change is detected. The constructors should have minimal configuration happening in them
-- Use the attach method to attach this component to an existing DOM element
-- Use the attach attribute in your HTML to automatically to attach elements to this component. They will show up in **this.attachments** which is a map with the attach name as the key
-- Use the createComponent() method to create and automatically add components to the component. Added Components will show up in **this.components** which is a map with the component name as a key
-- Use clearComponents() or destroyComponent() to automtically remove the the component and call release on it
+- Use the attach method to attach a component to an existing DOM element
+- Use the attach attribute in your HTML to automatically to attach elements to a component. They will show up in **this.attachments** which is a map with the attach name as the key
+- Use the createComponent() method to create and automatically add components to a component. Added Components will show up in **this.components** which is a map with the component name as a key
+- Use clearComponents() or destroyComponent() to automtically remove a component and call release on it
 - Use addServiceListener and removeListener to add listeners to a service. This takes care of unregistering the event listeners on release or a remove. The listeners are stored in the array **this.listeners**
 - Release will clean up all the attached listeners, components, and attachements
-- Configure the class in an **init()** function instead of the constructor. THe constructor should simply call the **super()** function with the tag name.
 
 ### Element
-Each component has a element whose named gets passed down through the constructor. You can access via **this.e**. A call to attach() will append this element into the element to be attached to.
+Each component has a element whose named gets passed down through the constructor. You can access it via **this.e**. A call to attach() will append this element into the element to be attached to.
 
 ### addServiceListener<A extends Service>(service: A, event: string, cb: any)
 This adds an event listener to a service. This will automatically be removed when the component gets destroyed. This uses a intermediate class that manages the intricacies of the **addEventListener** API and its difficulties with classes and arrow functions.
@@ -30,7 +29,7 @@ The resultant intermediate class is stored in **this.serviceListeners**
 Attach allows a component to attach itself to another element. You can pass in the element to attach to, or a selector string. The optional replace parameter replaces the inner contents of an element, otherwise it is appended to the end.
 
 ### clearComponents()
-Clear out all the created Components
+Clears out all the created Components
 
 ### protected clearHTML()
 Sets the HTML of the component to an empty string and clears out the attachments member
@@ -61,7 +60,7 @@ This is a helper function that allows you to apply a callback function on each o
 ### forEachComponents(cb: forEachCB)
 This is a helper function that allows you to apply a callback function on all of the child components
 
-### getId()
+### getId(): string
 Returns the unique ID associated with this component. Every component has its own unique ID that is generated when it is created.
 
 ### release(): void
@@ -114,12 +113,12 @@ export class Listener {
 ```
 
 ## Router
-Viage comes with a built in Router. It can be configured as a Hash, Location, or Standalone router. It is small but very functional. Routers should be created up front in app.ts. Any component that needs to access can get one by name.
+Viage comes with a built in Router. It can be configured as a Hash, Location, or Standalone router. It is small but very functional. Routers should be created up front in app.ts. Any component that needs access can get one by name.
 
 #### Types
 - Hash: A Hash Router usese the # symbol in front of a route in a URL imitating anchor links. This prevents the browser from actually loading a new page when the the location url has changed. This type of router is great for standalone apps that need to work without network connectivity. Once loaded, the app does not need to access the network except to make REST API calls if needed.
 
-- Location: A location Router actually reloads the location from the server. While this might seem like a horrible waste of network bandwidth, in reality its pretty small. What actually happens is a request goes out for the index.html. This file is small in a Viage app. From there it will try to load the Viage bundle.js and any asset files. The URLs for these assets are unchanged, and therfore the server should respond with a 304 (Not Modified) and the browser will used the cached versions of these files. When the app loads up and initializes, the router inspects the current URL and makes the appropriate state changes internally. In some other Location Router implementations, the route information is formatted something like this: https://foo.com/page1/foo and https://foo.com/page2/foo. This type of URL formatting is definetly easier to read, but it relies on the server being configured to always return back index.html if it can't find a file at that path. If your website contains several different web apps each with their own router and all at the same domain, it gets difficult to configure the server to make everything work properly. Viage sacrifices URL readability for easy deployment. The router state is encoded as a parameter along with any the data needed for the state. A Viage location router URL looks something like: https://home.html?s=bar;d=5;. This makes it easy to have have another Viage app at the same domain that deals with user information: https://user.html?s=foo;d=7; and requires minimal server configuration.
+- Location: A location Router actually reloads the location from the server. While this might seem like a horrible waste of network bandwidth, in reality its pretty small. What actually happens is a request goes out for the index.html. This file is small in a Viage app. From there it will try to load the Viage bundle.js and any asset files. The URLs for these assets are unchanged, and therefore the server should respond with a 304 (Not Modified) and the browser will used the cached versions of these files. When the app loads up and initializes, the router inspects the current URL and makes the appropriate state changes internally. In some other Location Router implementations, the route information is formatted something like this: https://foo.com/page1/foo and https://foo.com/page2/foo. This type of URL formatting is definetly easier to read, but it relies on the server being configured to always return back index.html if it can't find a file at that path. If your website contains several different web apps each with their own router and all at the same domain, it gets difficult to configure the server to make everything work properly. Viage sacrifices URL readability for easy deployment. The router state is encoded as a parameter along with any the data needed for the state. A Viage location router URL looks something like: https://home.html?/bar;d=5;. This makes it easy to have have another Viage app at the same domain that deals with user information: https://user.html?/foo;d=7; and requires minimal server configuration.
 
 - Standalone: A Standalone Router is a great way to manage content in a subpane that is active within one of your main router states. It does not use the built in location mechanisms of the browser and the Router must be called directly to perform state changes. This is done through the go() and back() function calls.
 
@@ -159,7 +158,7 @@ This creates a router using the name passed in. The portal is an HTML element th
 
 When the state is activated, a new Component is allocated, configured with the router (ie this.router will be set to the router that created it), and then if it exists, init will be called with the data associated with the URL.
 
-### getRouter(name: string)
+### getRouter(name: string): Router
 Gets a previously created router by name. This allows any component to get any created router.
 
 ### addStates(states: State[])
@@ -187,7 +186,7 @@ Clears a state change callback if set. To set use **setStateChangedCallback()**
 ### clearStates()
 Clears out all the existing states in a router.
 
-### createUrl<T>(state: string, data?: T)
+### createUrl<T>(state: string, data?: T): string
 This creates a URL out of a state string and a JSON-able data parameter. The T parameter is the data type being passed in.
 
 ```Javascript
@@ -195,10 +194,10 @@ const homeUrl = this.router.createUrl<void>(States.HOME);
 const editUrl = this.router.createUrl<Id>(States.EDIT, {id: this.item._id});
 ```
 
-### getName()
+### getName(): string
 Returns the Router's name.
 
-### getType()
+### getType(): string
 Returns the Router's type
 
 ### go(url: string)
@@ -239,7 +238,7 @@ For more information see the Viage Shopping List tutorial
 Tells a router to activate itself and start routing. This should be called as soon as the Router is configured.
 
 ## Misc
-### isCompatible()
+### isCompatible(): boolean
 This is a quick and dirty function to detect if the browser is IE. While not an exhaustive compatability check, there are very few browsers in use that are not IE, Edge, Safari, Chrome, Firefox or their mobile counterparts. One of the design considerations to keep this library small, is to ignore IE support. The Viage  Cli creates template projects that has code that looks like this:
 
 index.html:

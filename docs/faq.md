@@ -1,12 +1,12 @@
 # Viage FAQ
 
-## How do I update Viage
+## How do I update Viage?
 In the project that you want to update it in, type the following:
 ```Javascript
     npm install --save-dev viage
 ```
 
-## How do I update the Viage CLI
+## How do I update the Viage CLI?
 From any command line, type the following:
 ```Javascript
     npm install -g viage-cli
@@ -91,8 +91,8 @@ If it is hosted publically you can simply add a script tag in src/index.html . E
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 ```
 
-If you want to embeed the library into bundle.js:
-* Find the a Npm install project for the library and in a console in the projects directory type:
+If you want to embed the library into bundle.js:
+* Find the NPM module for the library and in a console in the projects directory type:
 ```
   npm install --save-dev <name of the npm library module>
 ```
@@ -143,7 +143,7 @@ import * as logo from '../logo.png';
     }
   }
 ```
-If you need to adjust the image inlining size, that can be found in webpack.common.js at this line:
+If you need to adjust the image inlining setpoint, it can be found in webpack.common.js at this line:
 
 ```Javascript
     test: /\.(png|svg|jpg|gif)$/i,
