@@ -15,12 +15,13 @@ Some usage notes:
 ### Element
 Each component has a element whose named gets passed down through the constructor. You can access it via **this.e**. A call to attach() will append this element into the element to be attached to.
 
-### addServiceListener<A extends Service>(service: A, event: string, cb: any)
+### addServiceListener&#60T&#62(service: Service, event: string, cb: ListenerCallback&#60T&#62): Listener&#60T&#62
 This adds an event listener to a service. This will automatically be removed when the component gets destroyed. This uses a intermediate class that manages the intricacies of the **addEventListener** API and its difficulties with classes and arrow functions.
 
 Example:
 ```Javascript
-    this.addServiceListener(ShoppingListService, 'update', () => this.updateList());
+    this.addServiceListener<ShoppingListData>(ShoppingListService, 'update',
+      (data: ShoppingListData) => this.updateList(data));
 ```
 
 The resultant intermediate class is stored in **this.serviceListeners**
@@ -34,7 +35,7 @@ Clears out all the created Components
 ### protected clearHTML()
 Sets the HTML of the component to an empty string and clears out the attachments member
 
-### createComponent<A extends Component>(c: new () => A, name?: string): A
+### createComponent&#60T extends Component&#62(c: new () => T, name?: string): T
 This function creates a child component and automatically adds it to **this.components** . If the optional name parameter is not used then a **id** is created and the it is added to the **this.components** object using the **id** as a key. If the owning class has a router configured it is assigned to class created using this function.
 
 Example:
@@ -60,6 +61,20 @@ This is a helper function that allows you to apply a callback function on each o
 ### forEachComponents(cb: forEachCB)
 This is a helper function that allows you to apply a callback function on all of the child components
 
+### getAttachment&#60T extends HTMLElement&#62(name: string): T
+Gets a attachement by name and returns with the correct typing:
+
+```Javascript
+const button = this.getAttachment<HTMLButton>('submit');
+```
+
+### getComponent&#60T extends Component&#62(name: string): T
+Gets a component by name and returns with the correct typing:
+
+```Javascript
+const myComponent = this.getComponent<MyComponent>('myComponent');
+```
+
 ### getId(): string
 Returns the unique ID associated with this component. Every component has its own unique ID that is generated when it is created.
 
@@ -70,7 +85,7 @@ This function is called by the system and can be called manually to destroy and 
 This takes a listener, calls remove on it and removes this instance from the list of listneners in the component.
 
 ### protected setHTML(html: string)
-This will replace the HTML associated with the components element. It will add any elements in the HTML that have the attach attribute and add them to this.attachments. As an example if the HTML contained a string like this:
+This will replace the HTML associated with the components element. It will add any elements in the HTML that have the attach attribute and add them to this.attachments. As an example, if the HTML contained a string like this:
 
 ``` <div attach="container"></div> ```
 
@@ -80,11 +95,15 @@ this.attachments.container will contain the element specified above.
 ## Service
 All services must derive off of the Service base class. This class gives you the following functionality:
 
-### addEventListener(event: string, cb: any) : Listener
+### addEventListener&#60T&#62(event: string, cb: ListenerCallback&#60T&#62) : Listener&#60T&#62
 The Service base class creates a private element that lets listeners attach. This function adds an event listener to an event. It returns the intermediate listener class. If using a component to listen to a service, user the components addServiceListener()
 
-### dispatchEvent(_event: string, data: any)
+### dispatchEvent&#60T&#62(eventName: string, data: T)
 Dispatch event lets you dispatch a custom event with data to all your listeners
+
+```Javascript
+this.dispatchEvent<Item[]>('update', this.list);
+```
 
 ## Listener
 The intermediate listener class takes care of all the intricacies of the addEventListener API. It is hard to remove a event listener once it is added if you use a arrow function or a class method. This class is not meant to be used directly and is used by the Service listeners. Calling remove() on this returned class removes the event listener.
@@ -92,15 +111,23 @@ The intermediate listener class takes care of all the intricacies of the addEven
 The class looks like this:
 
 ```Javascript
-export class Listener {
-  private cb: any;
-  private e: HTMLElement;
-  private event: string;
-  constructor (e: any, event: string, cb: any) {
-    this.cb = cb;
-    this.e = e as HTMLElement;
+export interface ListenerCallback<T> {
+  (data: T): void;
+};
+
+export class Listener<T> {
+  protected cb: any;
+  protected e: HTMLElement | Window;
+  protected event: string;
+  protected static counter = 0;
+  protected id: number;
+  constructor (element: HTMLElement | Window, event: string, cb: ListenerCallback<T>) {
+    this.cb = (e: CustomEvent) => cb(<T>e.detail);
+    this.e = element;
     this.event = event;
-    this.e.addEventListener(event, cb);
+    this.e.addEventListener(event, this.cb);
+    Listener.counter += 1;
+    this.id = Listener.counter;
   }
   remove() {
     if (this.e) {
@@ -108,6 +135,12 @@ export class Listener {
       this.e = null;
       this.cb = null;
     }
+  }
+  isRemoved(): boolean {
+    return !this.e;
+  }
+  getId(): number {
+    return this.id;
   }
 }
 ```
@@ -186,7 +219,7 @@ Clears a state change callback if set. To set use **setStateChangedCallback()**
 ### clearStates()
 Clears out all the existing states in a router.
 
-### createUrl<T>(state: string, data?: T): string
+### createUrl&#60T&#62(state: string, data?: T): string
 This creates a URL out of a state string and a JSON-able data parameter. The T parameter is the data type being passed in.
 
 ```Javascript
@@ -235,7 +268,7 @@ For more information see the Viage Shopping List tutorial
 
 
 ### start()
-Tells a router to activate itself and start routing. This should be called as soon as the Router is configured.
+Tells a router to activate itself and start routing. This should be called as after the Router is configured.
 
 ## Misc
 ### isCompatible(): boolean

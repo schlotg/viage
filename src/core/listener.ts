@@ -1,14 +1,18 @@
-export class Listener {
+export interface ListenerCallback<T> {
+  (data: T): void;
+};
+
+export class Listener<T> {
   protected cb: any;
-  protected e: HTMLElement;
+  protected e: HTMLElement | Window;
   protected event: string;
   protected static counter = 0;
   protected id: number;
-  constructor (e: any, event: string, cb: any) {
-    this.cb = cb;
-    this.e = e as HTMLElement;
+  constructor (element: HTMLElement | Window, event: string, cb: ListenerCallback<T>) {
+    this.cb = (e: CustomEvent) => cb(<T>e.detail);
+    this.e = element;
     this.event = event;
-    this.e.addEventListener(event, cb);
+    this.e.addEventListener(event, this.cb);
     Listener.counter += 1;
     this.id = Listener.counter;
   }

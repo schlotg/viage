@@ -37,5 +37,5 @@ test('Should have the event payload on callback', () => {
   let listener = service.addEventListener('test', (p: any) => called = p);
   service.dispatchEvent('test', 'payload1');
   console.log(called);
-  expect(called.detail).toBe('payload1');
+  expect(called).toBe('payload1');
 });

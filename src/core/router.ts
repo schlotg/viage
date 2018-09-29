@@ -1,9 +1,9 @@
 import { Component } from './component';
 import { Listener } from './listener';
 
-export interface State {
+export interface State<T extends Component> {
   name: string;
-  component: any;
+  component: T;
   type: 'DEFAULT' | 'NORMAL';
 }
 
@@ -26,12 +26,12 @@ class InternalState {
 export class Router {
 
   protected portal: HTMLElement;
-  protected states: { [index: string]: State } = {};
+  protected states: { [index: string]: State<any> } = {};
   protected currentState: InternalState;
   protected type: 'HASH' | 'LOCATION' | 'STANDALONE';
   protected history: string[] = [];
-  protected defaultState: State;
-  protected listener: Listener;
+  protected defaultState: State<any>;
+  protected listener: Listener<any>;
   protected name: string;
   protected stateChangedCallback: StateChangedCallback;
   protected starting = false;
@@ -41,7 +41,7 @@ export class Router {
     this.type = type;
     this.name = name;
     if (type === 'HASH') {
-      this.listener = new Listener(window, 'popstate', (e: PopStateEvent) => this.go(location.href));
+      this.listener = new Listener<any>(window, 'popstate', (e: PopStateEvent) => this.go(location.href));
     }
   }
 
@@ -123,8 +123,8 @@ export class Router {
     return this.type;
   }
 
-  addStates(states: State[]) {
-    states.forEach((state: State) => {
+  addStates(states: State<any>[]) {
+    states.forEach((state: State<any>) => {
       this.states[state.name] = state;
       if (state.type === 'DEFAULT') {
         this.defaultState = state;

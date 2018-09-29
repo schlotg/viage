@@ -1,15 +1,15 @@
 import { Service } from '../core/service';
-import { Listener } from '../core/listener';
+import { Listener, ListenerCallback } from '../core/listener';
 import { Router } from '../core/router';
 
-export type forEachCB = (e: any) => void;
+export type ForEachCb = (e: any) => void;
 
 export class Component {
 
   public e: HTMLElement;
-  protected attachments: any = {};
-  protected components: any = {};
-  protected listeners: Listener[] = [];
+  protected attachments: {[index: string]: HTMLElement} = {};
+  protected components: {[index: string]: Component} = {};
+  protected listeners: Listener<any>[] = [];
   static counter = 0;
   protected id: number;
   protected router: Router;
@@ -39,7 +39,7 @@ export class Component {
     this.attachments = {};
     const attachments = this.e.querySelectorAll('[attach]');
     for (let i = 0; i < attachments.length; ++i){
-      const attachment = attachments[i];
+      const attachment = attachments[i] as HTMLElement;
       this.attachments[attachment.getAttribute('attach')] = attachment;
     }
   }
@@ -53,7 +53,7 @@ export class Component {
   // release everything and call destroy if its defined
   release() {
     // clean up service listeners
-    this.listeners.forEach((l: Listener) => this.removeListener(l));
+    this.listeners.forEach((l: Listener<any>) => this.removeListener(l));
     // clean up components
     this.clearComponents();
     // cleanup attachments and innerHTML
@@ -80,9 +80,14 @@ export class Component {
     }
   }
 
-  forEachAttachments(cb: forEachCB) {
+  forEachAttachments(cb: ForEachCb) {
     const attachments = this.attachments;
     Object.keys(attachments).forEach(k => cb(attachments[k]));
+  }
+
+  // get an Attachment by name, return as a typed object
+  getAttachment<T extends HTMLElement>(name: string): T {
+    return <T>this.attachments[name];
   }
 
   // create a component
@@ -91,6 +96,11 @@ export class Component {
     this.components[name || instance.getId().toString()] = instance;
     instance.setRouter(this.router);
     return instance;
+  }
+
+  // get a Component by name, return as a typed object
+  getComponent<T extends Component>(name: string): T {
+    return this.components[name] as T;
   }
 
   clearComponents() {
@@ -119,20 +129,20 @@ export class Component {
     }
   }
 
-  forEachComponents(cb: forEachCB) {
+  forEachComponents(cb: ForEachCb) {
     const components = this.components;
     Object.keys(components).forEach(k => cb(components[k]));
   }
 
   // add a Listener to a service
-  addServiceListener<A extends Service>(service: A, event: string, cb: any): Listener {
+  addServiceListener<B>(service: Service, event: string, cb: ListenerCallback<B>): Listener<B> {
     const listener = service.addEventListener(event, cb);
     this.listeners.push(listener);
     return listener;
   }
 
   // remove a listener
-  removeListener(target: Listener) {
+  removeListener(target: Listener<any>) {
     if (target) {
       target.remove();
       const id = target.getId();

@@ -154,8 +154,8 @@ test('Should call destroy on release', () => {
 test('Should create a new component and add it by name', () => {
   const component = new TestComponent('test');
   component.createComponent(ChildComponent, 'test-child').init('childComponent');
-  const components = component.getComponents();
-  expect(components['test-child'].name).toBe('childComponent');
+  const child = component.getComponent<ChildComponent>('test-child');
+  expect(child.name).toBe('childComponent');
 });
 
 test('Should create a new component and add it, should create an entry by id', () => {
@@ -163,7 +163,7 @@ test('Should create a new component and add it, should create an entry by id', (
   component.createComponent(ChildComponent).init('childComponent');
   const components = component.getComponents();
   let child: ChildComponent;
-  Object.keys(components).forEach(k => child = components[k]);
+  Object.keys(components).forEach(k => child = components[k] as ChildComponent);
   expect(child && child.name).toBe('childComponent');
 });
 
@@ -172,7 +172,7 @@ test('Should create a new component and add it, should create an entry by id', (
   component.createComponent(ChildComponent).init('childComponent');
   const components = component.getComponents();
   let child: ChildComponent;
-  Object.keys(components).forEach(k => child = components[k]);
+  Object.keys(components).forEach(k => child = components[k] as ChildComponent);
   expect(child && child.name).toBe('childComponent');
 });
 
@@ -205,9 +205,9 @@ test('Should destroy the right component', () => {
   const component = new TestComponent('test');
   const child = component.createComponent(ChildComponent, '1').init('childComponent1');
   component.createComponent(ChildComponent, '2').init('childComponent2');
-  component.destroyComponent(child as Component);
-  const components = component.getComponents();
-  expect(components[2].name).toBe('childComponent2');
+  component.destroyComponent(child);
+  const child2 = component.getComponent<ChildComponent>('2');
+  expect(child2.name).toBe('childComponent2');
 });
 
 test('Should call release on the destroyed component', () => {
@@ -235,7 +235,7 @@ test('Should iterate through all the Child Components', () => {
   component.createComponent(ChildComponent, '1');
   component.createComponent(ChildComponent, '2');
   component.forEachComponents((c: ChildComponent) => c.setFlag());
-  const components = component.getComponents();
+  const components = component.getComponents() as {[index: string]: ChildComponent}
   let sum = 0;
   Object.keys(components).forEach((k: string) => sum += components[k].flag ? 1 : 0);
   expect(sum).toBe(2);
@@ -246,7 +246,7 @@ test('Should attach a listener to a service', () => {
   const component = new TestComponent('test');
   let eventCalled = false;
   const service = new Service();
-  component.addServiceListener<Service>(service, 'testEvent', () => eventCalled = true);
+  component.addServiceListener<any>(service, 'testEvent', () => eventCalled = true);
   service.dispatchEvent('testEvent', {});
   expect(eventCalled).toBe(true);
 });
@@ -255,7 +255,7 @@ test('Should remove a listener to a service', () => {
   const component = new TestComponent('test');
   let eventCalled = false;
   const service = new Service();
-  const listener = component.addServiceListener<Service>(service, 'testEvent', () => eventCalled = true);
+  const listener = component.addServiceListener<any>(service, 'testEvent', () => eventCalled = true);
   listener.remove();
   service.dispatchEvent('testEvent', {});
   expect(eventCalled).toBe(false);
@@ -265,7 +265,7 @@ test('Should clear a listener to a service', () => {
   const component = new TestComponent('test');
   let eventCalled = false;
   const service = new Service();
-  const listener = component.addServiceListener<Service>(service, 'testEvent', () => eventCalled = true);
+  const listener = component.addServiceListener<any>(service, 'testEvent', () => eventCalled = true);
   listener.remove();
   expect(listener.isRemoved()).toBe(true);
 });
@@ -274,7 +274,7 @@ test('Release() should remove a listener to a service', () => {
   const component = new TestComponent('test');
   let eventCalled = false;
   const service = new Service();
-  component.addServiceListener<Service>(service, 'testEvent', () => eventCalled = true);
+  component.addServiceListener<any>(service, 'testEvent', () => eventCalled = true);
   component.release();
   service.dispatchEvent('testEvent', {});
   expect(eventCalled).toBe(false);
@@ -284,7 +284,7 @@ test('Release() should clear the listeners array', () => {
   const component = new TestComponent('test');
   let eventCalled = false;
   const service = new Service();
-  component.addServiceListener<Service>(service, 'testEvent', () => eventCalled = true);
+  component.addServiceListener<any>(service, 'testEvent', () => eventCalled = true);
   component.release();
   const count = component.getListeners().length;
   expect(count).toBe(0);
