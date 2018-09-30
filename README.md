@@ -61,7 +61,8 @@ For the sake of codes size and complexity comparisons, I have implemented this s
 [Angular - project](https://github.com/schlotg/angular-shopping-list)
 
 ### Is Viage easy?
-I think so. If you compare the React, Angular, and the Viage versions of the Shopping List App. You will see that a similar amount of code had to be written for each framework. It is my opinoin that the Viage version wins at being the smallest and easiest to understand.
+I think so. If you compare the React, Angular, and the Viage versions of the Shopping List App. You will see that a similar amount of code had to be
+written for each framework. Viage's classes and API are small. Viage relies on standard web technologies whenever possible and minimizes re-invention. It is my opinion that the Viage version of the Shopping List App wins at being the smallest and easiest to understand.
 
 ### What are the advantages of Viage?
 * Viage is fast and small
