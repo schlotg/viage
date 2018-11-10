@@ -184,6 +184,12 @@ export class Router {
     }
   }
 
+  protected strip(url: string) {
+    const i = url.indexOf('://');
+    const start = (i > 0) ? url.indexOf('/', i + 3) + 1 : 0;
+    return url.substring(start);
+  }
+
   clearStateChangedCallback() {
     this.stateChangedCallback = null;
   }
@@ -194,7 +200,8 @@ export class Router {
 
   go(url: string): boolean {
     // only do something we havent been set yet or if we are going to somewhere new
-    if (!this.currentState || url.indexOf(this.currentState.url) === -1) {
+    if (!this.currentState || this.strip(url) !== this.currentState.url) {
+      //url.indexOf(this.currentState.url) === -1) {
       let stateInfo = this.decodeUrl(url);
       let state = this.states[stateInfo.name];
       if (!state) { console.warn(`Viage Router: State not found. State:${stateInfo.name} Url:${url}`); }
