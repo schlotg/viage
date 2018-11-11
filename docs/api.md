@@ -84,12 +84,62 @@ This function is called by the system and can be called manually to destroy and 
 ### removeListener(target: Listener)
 This takes a listener, calls remove on it and removes this instance from the list of listneners in the component.
 
-### protected setHTML(html: string)
+### protected setHTML(html: string, source?: Component: {[index: string]: string})
 This will replace the HTML associated with the components element. It will add any elements in the HTML that have the attach attribute and add them to this.attachments. As an example, if the HTML contained a string like this:
 
 ``` <div attach="container"></div> ```
 
 this.attachments.container will contain the element specified above.
+
+Viage relies heavily on the use of template, or back tick strings. A normal inline use might look something like this:
+
+```Javascript
+import { Component } from 'viage';
+
+export class MyComponent extends Component {
+  protected first = 'John';
+  protected last = 'Doe';
+  constructor() {
+    super('my-component');
+  }
+  init() {
+    this.setHTML(`<p>name: ${this.first} ${this.last}</p>`); // sets the html to: <p>name: John Doe</p>
+  }
+}
+```
+
+The optional source component allows the string to be evalauted as a template string against the source. This is useful for external HTML that is imported but contains template parameters. Consider the following:
+
+test.html:
+```HTML
+<p>name: ${this.first} ${this.last}</p>
+```
+
+```Javascript
+import { Component } from 'viage';
+import * as html from './test.html';
+
+export class MyComponent extends Component {
+  protected first = 'John';
+  protected last = 'Doe';
+  constructor() {
+    super('my-component');
+  }
+  init() {
+    this.setHTML(html, this); // sets the html to: <p>name: John Doe</p>
+  }
+}
+```
+
+Additionally, you can pass an object in, instead of the this parameter that wil act as the source. In the above function you can replace the this parameter in the init function with something like this:
+```Javascript
+...
+  init() {
+    this.setHTML(html, { first: 'John', last: 'Doe' }); // sets the html to: <p>name: John Doe</p>
+  }
+}
+```
+The this in the HTML template parameters now refers to the object passed in.
 
 
 ## Service

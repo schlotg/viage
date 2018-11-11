@@ -150,3 +150,67 @@ If you need to adjust the image inlining setpoint, it can be found in webpack.co
     use: [ { loader: 'url-loader', options: { limit: 8192 } } ]
 ```
 In this case everything below 8K is inlined and everything above will copied to the build directory and referenced.
+
+## How do I use HTML files instead of inline strings?
+Most of the time you should find that using the ES6 template strings for embedding HTML into components works very well for components that contain very little HTML or where the HTML is procedually generated. This also follows the React model where jsx is the main mechanism for producing inline HTML. However, you do lose IDE support because the IDE doesn't understand that there is HTML in your strings. Occasionally, you also have HTML that is very long, such as HTML involved in writing a tutorial. There are legitimate use cases for breaking out the HTML in seperate files. Luckily Webpack supports the importing of HTML files. If you use the Viage CLI to create your projects, it will create a project already configured so you can write seperate HTML files that will get compiled and loaded into the final bundle. To use them you just need to import them like so:
+
+```Javascript
+import { Component } from 'viage';
+import * as html from './myhtml.html';
+
+export class MyComponent extends Component {
+  constructor() {
+    super('my-component');
+  }
+  init() {
+    this.setHTML(html);
+  }
+}
+```
+
+Where myhtml.html can contain raw html.
+
+However, it might be still be necessary to inject values into the HTML and some form of templating is required. To accomplish this one can always uses a library like handlebars but Viage also has a reasonable solution built in. By setting the optional source in the setHTML function, you can access variables in the component class using the this pointer. Consider the following example:
+
+test.html:
+```HTML
+<p>name: ${this.first} ${this.last}</p>
+```
+
+```Javascript
+import { Component } from 'viage';
+import * as html from './test.html';
+
+export class MyComponent extends Component {
+  protected first = 'John';
+  protected last = 'Doe';
+  constructor() {
+    super('my-component');
+  }
+  init() {
+    this.setHTML(html, this); // sets the html to <p>name: John Doe</p>
+  }
+}
+```
+
+Additionally, instead of using the class's this pointer you can pass in an object that will be used to supply the data used in evaluation. Consider the following using the same HTML source file as above:
+
+```Javascript
+import { Component } from 'viage';
+import * as html from './test.html';
+
+export class MyComponent extends Component {
+  constructor() {
+    super('my-component');
+  }
+  init() {
+    this.setHTML(html, {first: 'John', last: 'Doe'}); // sets the html to <p>name: John Doe</p>
+  }
+}
+```
+
+Notice that in this case, the this.first and this.last references come from the optional object passed in the setHTML() call.
+
+Keep in mind that the use of inline back tick strings does not require an evaluation parameter as those are resolved in the code in the declaring function.
+
+

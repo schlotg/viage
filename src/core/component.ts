@@ -33,9 +33,10 @@ export class Component {
     return this.router;
   }
 
-  // set HTML and extract attachments
-  protected setHTML(html: string) {
-    this.e.innerHTML = html;
+  // set HTML and extract attachments. If source is set, evaluate as a template string against the source
+  protected setHTML(html: string, source?: Component | {[index: string]: string}) {
+    function evaluate(str: string) { return eval(`\`${str}\``) }
+    this.e.innerHTML = (source) ? evaluate.call(source, html) : html;
     this.attachments = {};
     const attachments = this.e.querySelectorAll('[attach]');
     for (let i = 0; i < attachments.length; ++i){
