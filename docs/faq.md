@@ -168,9 +168,9 @@ export class MyComponent extends Component {
 }
 ```
 
-Where myhtml.html can contain raw html.
+Where myhtml.html can contain raw HTML.
 
-However, it might be still be necessary to inject values into the HTML and some form of templating is required. To accomplish this one can always uses a library like handlebars but Viage also has a reasonable solution built in. By setting the optional source in the setHTML function, you can access variables in the component class using the this pointer. Consider the following example:
+However, it might be still be necessary to inject values into the HTML and some form of templating is required. To accomplish this one can always uses a library like handlebars but Viage also has a reasonable solution built in. By setting the optional source in the setHTML function, you can access variables in the component class using the 'this' pointer. Consider the following example:
 
 test.html:
 ```HTML
@@ -188,12 +188,13 @@ export class MyComponent extends Component {
     super('my-component');
   }
   init() {
-    this.setHTML(html, this); // sets the html to <p>name: John Doe</p>
+    // sets the html to <p>name: John Doe</p>
+    this.setHTML(html, this);
   }
 }
 ```
 
-Additionally, instead of using the class's this pointer you can pass in an object that will be used to supply the data used in evaluation. Consider the following using the same HTML source file as above:
+Instead of using the Component class's this pointer, you can pass in an object that will be used to supply the data used in evaluation. Consider the following using the same HTML source file as above:
 
 ```Javascript
 import { Component } from 'viage';
@@ -204,7 +205,8 @@ export class MyComponent extends Component {
     super('my-component');
   }
   init() {
-    this.setHTML(html, {first: 'John', last: 'Doe'}); // sets the html to <p>name: John Doe</p>
+    // sets the html to <p>name: John Doe</p>
+    this.setHTML(html, {first: 'John', last: 'Doe'});
   }
 }
 ```

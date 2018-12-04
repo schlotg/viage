@@ -108,7 +108,7 @@ export class MyComponent extends Component {
 }
 ```
 
-The optional source component allows the string to be evalauted as a template string against the source. This is useful for external HTML that is imported but contains template parameters. Consider the following:
+The optional source component allows the string to be evaluated as a template string against the source. This is useful for external HTML that is imported but contains template parameters. Consider the following:
 
 test.html:
 ```HTML
@@ -131,7 +131,7 @@ export class MyComponent extends Component {
 }
 ```
 
-Additionally, you can pass an object in, instead of the this parameter that wil act as the source. In the above function you can replace the this parameter in the init function with something like this:
+Additionally, you can pass an object in, instead of the 'this' parameter, this object will act as the source. In the above function, you can replace the 'this' parameter in the init function with something like this:
 ```Javascript
 ...
   init() {
@@ -139,8 +139,7 @@ Additionally, you can pass an object in, instead of the this parameter that wil 
   }
 }
 ```
-The this in the HTML template parameters now refers to the object passed in.
-
+The 'this' in the HTML template parameters now refers to the object being passed passed in.
 
 ## Service
 All services must derive off of the Service base class. This class gives you the following functionality:

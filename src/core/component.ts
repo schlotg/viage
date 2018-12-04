@@ -34,8 +34,13 @@ export class Component {
   }
 
   // set HTML and extract attachments. If source is set, evaluate as a template string against the source
-  protected setHTML(html: string, source?: Component | {[index: string]: string}) {
-    function evaluate(str: string) { return eval(`\`${str}\``) }
+  protected setHTML(html: string, source?: Component | {[index: string]: any}) {
+    function evaluate(str: string) {
+      let result = '';
+      try { result =  eval(`\`${str}\``) }
+      catch(e) { console.error('Error trying to evalaute in setHTML', e) }
+      return result;
+    }
     this.e.innerHTML = (source) ? evaluate.call(source, html) : html;
     this.attachments = {};
     const attachments = this.e.querySelectorAll('[attach]');
