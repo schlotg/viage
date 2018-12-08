@@ -110,10 +110,10 @@ Components contain HTML and other components. Components communicate down stream
 Services are singletons that are usually a data repository. They should handle the setting and getting of data and provide a mechanism to notify everyone else when the data has changed. The Service base class has some helpers for adding listeners and dispatching events.
 
 ### Router
-Viage also has a quick and dirty router that is about 225 lines of code. This is a configurable Router and can be a HASH, SATANDALONE, and LOCATION router. It allows Single Page Apllications to be created quickly and easily. The Router maps routes to components which render into a common element in the DOM. For more information see the [API Docs](docs/api.md) and some router design considerations [here](docs/api.md).
+Viage also has a quick and dirty router that is about 225 lines of code. This is a configurable Router and can be a HASH, SATANDALONE, and LOCATION router. It allows Single Page Apllications to be created quickly and easily. The Router maps routes to components which render into a common element in the DOM. For more information see the [API Docs](https://schlotg.github.io/#/api) and some router design considerations [here](https://schlotg.github.io/#/router).
 
 ## Shopping List Tutorial
-The quickest way to learn Viage is to walk through a simple shopping list app. You can find that [here](https://github.com/schlotg/viage-shopping-list)
+The quickest way to learn Viage is to walk through a simple shopping list app. You can find the [Shopping List Tutorial here](https://schlotg.github.io/#/tutorial_introduction)
 
 ## Testing
 When using the Viage CLI to create a new project, it creates all the hooks necessary to start writing tests with ts-jest right out of the box. ts-jest is a Tyepscript version of Jest. All you have to do is add your tests to the test directory. The file name must have .test in it somewhere. To run tests type:
@@ -125,7 +125,7 @@ When using the Viage CLI to create a new project, it creates all the hooks neces
 For examples checkout the tests in the Shopping List Tutorial. There is plenty of great documentation at the [Jest](https://jestjs.io/en/) website for info on how to Jest.
 
 ## API
-The Viage API is documented [here](docs/api.md)
+The Viage API is documented [here](https://schlotg.github.io/#/api)
 
 ## FAQ
-For general information on how to do things like add a linter, go [here](docs/faq.md)
+For general information on how to do things like add a linter, go [here](https://schlotg.github.io/#/faq)
