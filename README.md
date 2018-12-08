@@ -2,7 +2,7 @@
 Why does the world need another Javascript Framework? Well it doesn't, and that's why this isn't a framework at all but rather some minimal base classs, tools, and a small set of practices and principles.
 
 # Viage Website
-Please go [here](https://schlotg.github.io/) for a web version of the documentation and tutorial
+Please go to the [Viage Website](https://schlotg.github.io/) for a web version of the documentation and tutorial
 
 ## It is 2018
 Am I the only one that is dismayed at the current state of Web development? If I want to use use Bootstrap with Angular, I have to install a special Angular version of the library. If I decide to use Botstrap with React, I need to use the React version. There seems to be at least 3 versions of every library, a React, Angular, and native Javascript version. Adding to the frustration, there are the native DOM APIs and then different APIS for Angular, React, and whatever the latest framework of the month is.
@@ -33,7 +33,7 @@ That is exactly the question I am trying to answer. If I just use some reasonabl
 Viage is simply 4 very tiny classes, some design design best practices, and a [CLI](https://github.com/schlotg/viage-cli). The CLI takes care of setting up skeleton projects. It configures Typescript and Webpack so all you have to do is start writing code.
 
 ### Is Viage fast?
-It turns out that a lot of time and effort goes into making browsers fast with the native APIs. Using them produces good results. To verify this I implemented a Viage version of the React Fiber Demo. It is as least as fast as React Fiber. You can see for yourself [here](https://github.com/schlotg/viage-sierpinski)
+It turns out that a lot of time and effort goes into making browsers fast with the native APIs. Using them produces good results. To verify this I implemented a Viage version of the React Fiber Demo. It is as least as fast as React Fiber. You can see for yourself at [Viage Sierpinksi Demo](https://github.com/schlotg/viage-sierpinski)
 
 ### Is Viage small?
 To test this I created a shopping list app in Angular, React, and Viage. The total code sizes generated for each framework are shown below:
@@ -46,7 +46,7 @@ To test this I created a shopping list app in Angular, React, and Viage. The tot
 
 **You can see that Viage in this test case is 8-18 times smaller!**
 
-For the sake of codes size and complexity comparisons, I have implemented this same app in React and Angular. I tried to keep the code as similar as possible within the bounds of each framework. You can find them and a running Viage version here:
+For the sake of codes size and complexity comparisons, I have implemented this same app in React and Angular. I tried to keep the code as similar as possible within the bounds of each framework. You can find them and a running Viage version at the links below:
 
 [Viage - project](https://github.com/schlotg/viage-shopping-list)
 
@@ -110,10 +110,10 @@ Components contain HTML and other components. Components communicate down stream
 Services are singletons that are usually a data repository. They should handle the setting and getting of data and provide a mechanism to notify everyone else when the data has changed. The Service base class has some helpers for adding listeners and dispatching events.
 
 ### Router
-Viage also has a quick and dirty router that is about 225 lines of code. This is a configurable Router and can be a HASH, SATANDALONE, and LOCATION router. It allows Single Page Apllications to be created quickly and easily. The Router maps routes to components which render into a common element in the DOM. For more information see the [API Docs](https://schlotg.github.io/#/api) and some router design considerations [here](https://schlotg.github.io/#/router).
+Viage also has a quick and dirty router that is about 225 lines of code. This is a configurable Router and can be a HASH, STANDALONE, and LOCATION router. It allows Single Page Apllications to be created quickly and easily. The Router maps routes to components which render into a common element in the DOM. For more information see the [API Docs](https://schlotg.github.io/#/api) and  [Router Design Considerations](https://schlotg.github.io/#/router).
 
 ## Shopping List Tutorial
-The quickest way to learn Viage is to walk through a simple shopping list app. You can find the [Shopping List Tutorial here](https://schlotg.github.io/#/tutorial_introduction)
+The quickest way to learn Viage is to walk through a simple shopping list app. You can find it at [Shopping List Tutorial](https://schlotg.github.io/#/tutorial_introduction)
 
 ## Testing
 When using the Viage CLI to create a new project, it creates all the hooks necessary to start writing tests with ts-jest right out of the box. ts-jest is a Tyepscript version of Jest. All you have to do is add your tests to the test directory. The file name must have .test in it somewhere. To run tests type:
@@ -125,7 +125,7 @@ When using the Viage CLI to create a new project, it creates all the hooks neces
 For examples checkout the tests in the Shopping List Tutorial. There is plenty of great documentation at the [Jest](https://jestjs.io/en/) website for info on how to Jest.
 
 ## API
-The Viage API is documented [here](https://schlotg.github.io/#/api)
+The Viage API is documented is on the [Viage Website](https://schlotg.github.io/#/api)
 
 ## FAQ
-For general information on how to do things like add a linter, go [here](https://schlotg.github.io/#/faq)
+For general information on how to do things like add a linter, vist it the [FAQ](https://schlotg.github.io/#/faq)
