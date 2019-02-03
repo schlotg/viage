@@ -1,6 +1,6 @@
 {
   "name": "viage",
-  "version": "1.4.0",
+  "version": "1.4.2",
   "description": "Modern, minimal, fast web framework",
   "main": "./src/index.ts",
   "homepage": "https://github.com/schlotg/viage",
