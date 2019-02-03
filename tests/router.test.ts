@@ -293,7 +293,7 @@ test('name and type should get set properly', () => {
 
 test('Should correctly add states and set the default state', () => {
   const router = new TestRouter();
-  const states: State[] = [
+  const states: State<any>[] = [
     {name: 'state1', component: TestComponent, type: 'DEFAULT' },
     {name: 'state2', component: TestComponent, type: 'NORMAL' },
   ];
@@ -307,7 +307,7 @@ test('Should correctly add states and set the default state', () => {
 
 test('Should remove the correct state', () => {
   const router = new TestRouter();
-  const states: State[] = [
+  const states: State<any>[] = [
     {name: 'state1', component: TestComponent, type: 'DEFAULT' },
     {name: 'state2', component: TestComponent, type: 'NORMAL' },
   ];
@@ -364,7 +364,7 @@ test('go() should error and warn when no states are defined', () => {
 
 test('go() should try to activate a valid state', () => {
   const router = new TestRouter();
-  const states: State[] = [
+  const states: State<any>[] = [
     {name: 'state1', component: TestComponent, type: 'DEFAULT' },
     {name: 'state2', component: TestComponent, type: 'NORMAL' },
   ];
@@ -377,7 +377,7 @@ test('go() should try to activate a valid state', () => {
 
 test('go() should try to activate a valid state and set location.href', () => {
   const router = new TestRouter('HASH');
-  const states: State[] = [
+  const states: State<any>[] = [
     {name: 'state1', component: TestComponent, type: 'DEFAULT' },
     {name: 'state2', component: TestComponent, type: 'NORMAL' },
   ];
@@ -414,7 +414,7 @@ test('back() should call pop last history entry and call go if STANDALONE router
 
 test('setStateChangedCallback should call before the router state change and actually trigger when the promise is resolved', (done) => {
   const router = new TestRouter('HASH');
-  const states: State[] = [
+  const states: State<any>[] = [
     {name: 'state1', component: TestComponent, type: 'DEFAULT' },
     {name: 'state2', component: TestComponent, type: 'NORMAL' },
   ];

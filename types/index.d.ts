@@ -24,6 +24,6 @@ SOFTWARE.
  */
 export { Component } from './core/component';
 export { Listener } from './core/listener';
-export { getRouter, createRouter, destroyRouter, Router, State, StateChangedCallback, StateInfo} from './core/router';
+export { getRouter, createRouter, destroyRouter, Router, State, StateChangedCallback, StateInfo } from './core/router';
 export { Service } from './core/service';
 export { isCompatible, animate, AnimateCallback, remove, removeElement, throttle, debounce } from './core/utils';

@@ -1,4 +1,4 @@
 tsconfig.json
-src
 docs
 tests
+dest

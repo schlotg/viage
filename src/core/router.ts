@@ -3,7 +3,8 @@ import { Listener } from './listener';
 
 export interface State<T extends Component> {
   name: string;
-  component: T;
+  component?: T;
+  promise?: any;
   type: 'DEFAULT' | 'NORMAL';
 }
 
@@ -17,7 +18,8 @@ export interface StateInfo {
 
 class InternalState {
   name: string;
-  component: any;
+  component?: any;
+  promise?: any;
   data: any;
   url: string;
   componentInstance?: any;
@@ -75,30 +77,55 @@ export class Router {
   }
 
   protected activateState(state: InternalState) {
-    const currentState = this.currentState || {} as InternalState;
-    if (currentState.url !== state.url) {
-      // clear out the old state
-      this.portal.innerHTML = '';
-      if (currentState.componentInstance) {
-        currentState.componentInstance.release();
-        currentState.componentInstance = null;
+    return new Promise ((resolve, reject) => {
+      const currentState = this.currentState || {} as InternalState;
+      if (currentState.url !== state.url) {
+        // clear out the old state
+        this.portal.innerHTML = '';
+        if (currentState.componentInstance) {
+          currentState.componentInstance.release();
+          currentState.componentInstance = null;
+        }
+        // If a state then create one
+        if (state.component) {
+          const component: Component = new state.component();
+          component.setRouter(this);
+          component.attach(this.portal);
+          // call init on the component if it exists
+          const _component = component as any;
+          if (_component.init) {
+            _component.init(state.data);
+          }
+          state.componentInstance = component;
+          // set the current state
+          this.currentState = state;
+          if (this.type === 'STANDALONE') {
+            this.history.push(state.url);
+          }
+          resolve();
+        // else if a function then call it and wait on the promise
+        } else {
+          state.promise().then((component: Component) => {
+            component.setRouter(this);
+            component.attach(this.portal);
+            // call init on the component if it exists
+            const _component = component as any;
+            if (_component.init) {
+              _component.init(state.data);
+            }
+            state.componentInstance = component;
+            // set the current state
+            this.currentState = state;
+            if (this.type === 'STANDALONE') {
+              this.history.push(state.url);
+            }
+            resolve();
+          });
+        }
+      } else {
+        resolve();
       }
-      // create the new state
-      const component: Component = new state.component();
-      component.setRouter(this);
-      component.attach(this.portal);
-      // call init on the component if it exists
-      const _component = component as any;
-      if (_component.init) {
-        _component.init(state.data);
-      }
-      state.componentInstance = component;
-      // set the current state
-      this.currentState = state;
-      if (this.type === 'STANDALONE') {
-        this.history.push(state.url);
-      }
-    }
+  });
   }
 
   protected error(msg: string, url: string) {
@@ -173,15 +200,16 @@ export class Router {
   }
 
   protected _go(url: string, internalState: InternalState) {
-    this.activateState(internalState);
-    if (this.type !== 'STANDALONE') {
-      const current = location.href;
-      // only assign this to location if it is not already there
-      const currentLocation = current.substring(current.indexOf(url));
-      if (currentLocation !== url) {
-        location.href = url;
+    this.activateState(internalState).then(() => {
+      if (this.type !== 'STANDALONE') {
+        const current = location.href;
+        // only assign this to location if it is not already there
+        const currentLocation = current.substring(current.indexOf(url));
+        if (currentLocation !== url) {
+          location.href = url;
+        }
       }
-    }
+    });
   }
 
   protected strip(url: string) {
@@ -212,7 +240,7 @@ export class Router {
         const newUrl = this.createUrl(state.name, stateInfo.data);
         const href = location.href;
         const oldUrl = href.slice(href.indexOf(this.type === 'HASH' ? '#' : '?'));
-        let internalState = { name: state.name, component: state.component, data: stateInfo.data, url: newUrl };
+        let internalState = { name: state.name, component: state.component, promise: state.promise, data: stateInfo.data, url: newUrl };
         // if we are starting and the url needs to be changed just change it
         if (this.starting && this.type === 'LOCATION' && oldUrl !== newUrl) {
           location.href = newUrl;

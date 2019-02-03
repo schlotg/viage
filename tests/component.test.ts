@@ -63,9 +63,9 @@ test('Should instantiate a new component instance', () => {
   expect(component.e.nodeName).toBe('TEST');
 });
 
-test('Should increment the id for every new instance', () => {
+test('Should create a new id for every new instance', () => {
   const component = new TestComponent('test');
-  expect(component.getId()).toBe(1);
+  expect(component.getId()).toBeTruthy();
 });
 
 test('Should add HTML to the element', () => {
@@ -222,7 +222,7 @@ test('Should clear all the components and release them', () => {
   const component = new TestComponent('test');
   let destroyed1 = false;
   let destroyed2 = false;
-    component.createComponent(ChildComponent, '1').init('childComponent1', () => destroyed1 = true);
+  component.createComponent(ChildComponent, '1').init('childComponent1', () => destroyed1 = true);
   component.createComponent(ChildComponent, '2').init('childComponent2', () => destroyed2 = true);
   component.clearComponents();
   const components = component.getComponents();

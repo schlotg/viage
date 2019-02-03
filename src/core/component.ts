@@ -1,6 +1,7 @@
 import { Service } from '../core/service';
 import { Listener, ListenerCallback } from '../core/listener';
 import { Router } from '../core/router';
+import { generateId } from '../core/utils';
 
 export type ForEachCb = (e: any) => void;
 
@@ -8,19 +9,20 @@ export class Component {
 
   public e: HTMLElement;
   protected attachments: {[index: string]: HTMLElement} = {};
+  protected a = this.attachments;
   protected components: {[index: string]: Component} = {};
+  protected c = this.components;
   protected listeners: Listener<any>[] = [];
-  static counter = 0;
-  protected id: number;
+  protected l = this.listeners;
+  protected id: string;
   protected router: Router;
 
   constructor(tagName: string) {
     this.e = document.createElement(tagName);
-    this.id = Component.counter;
-    Component.counter += 1;
+    this.id = generateId();
   }
 
-  getId() : number {
+  getId() : string {
     return this.id;
   }
 
@@ -43,6 +45,7 @@ export class Component {
     }
     this.e.innerHTML = (source) ? evaluate.call(source, html) : html;
     this.attachments = {};
+    this.a = this.attachments;
     const attachments = this.e.querySelectorAll('[attach]');
     for (let i = 0; i < attachments.length; ++i){
       const attachment = attachments[i] as HTMLElement;
@@ -54,6 +57,7 @@ export class Component {
   protected clearHTML() {
     this.e.innerHTML = '';
     this.attachments = {};
+    this.a = this.attachments;
   }
 
   // release everything and call destroy if its defined
@@ -112,6 +116,7 @@ export class Component {
   clearComponents() {
     Object.keys(this.components).forEach( k => this.destroyComponent(k));
     this.components = {};
+    this.c = this.components;
   }
 
   // destroy a component by either string or component
@@ -147,6 +152,13 @@ export class Component {
     return listener;
   }
 
+  // add a listener to any element or the window
+  addListener(element: HTMLElement | Window, event: string, cb: any) {
+    const listener = new Listener<Event>(element, event, cb);
+    this.listeners.push(listener);
+    return listener;
+  }
+
   // remove a listener
   removeListener(target: Listener<any>) {
     if (target) {
@@ -160,6 +172,16 @@ export class Component {
         }
         return next;
       });
+    }
+  }
+
+  // remove an element from an array
+  remove<T>(elements: T[], element: T) {
+    for (let i = 0; i < elements.length; ++i) {
+      if (elements[i] === element) {
+        elements.splice(i, 1);
+        break;
+      }
     }
   }
 }

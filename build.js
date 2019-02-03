@@ -1,7 +1,7 @@
 const fs = require('fs');
 const FILE_NAME = 'src/index.ts';
 let data = fs.readFileSync(FILE_NAME).toString();
-const key = '/** Viage Version ';
+const key = '/*! Viage Version ';
 const endKey = '*/';
 const pj = require('./package.json');
 
