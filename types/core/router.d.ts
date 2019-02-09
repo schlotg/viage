@@ -50,6 +50,7 @@ export declare class Router {
     clearStateChangedCallback(): void;
     setStateChangedCallback(cb: StateChangedCallback): void;
     go(url: string): boolean;
+    goDirect<T>(state: string, data?: T): void;
     back(): void;
 }
 export declare function getRouter(name: string): Router;

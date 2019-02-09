@@ -258,6 +258,10 @@ export class Router {
     return false;
   }
 
+  goDirect<T>(state: string, data?: T) {
+    this.go(this.createUrl<T>(state, data));
+  }
+
   back() {
     if (this.type !== 'STANDALONE') {
       history.back();
