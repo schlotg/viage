@@ -4,10 +4,10 @@ Why does the world need another Javascript Framework? Well it doesn't, and that'
 # Viage Website
 Please go to the [Viage Website](https://schlotg.github.io/) for a web version of the documentation and tutorial
 
-## It is 2018
+## It is 2019
 Am I the only one that is dismayed at the current state of Web development? If I want to use use Bootstrap with Angular, I have to install a special Angular version of the library. If I decide to use Botstrap with React, I need to use the React version. There seems to be at least 3 versions of every library, a React, Angular, and native Javascript version. Adding to the frustration, there are the native DOM APIs and then different APIS for Angular, React, and whatever the latest framework of the month is.
 
-According to various Web stats, less than 5% of all web traffic is IE, and its market share is shrinking fast. This leaves about 95% of the world using modern up-to-date browsers. In 2018, browsers have some really nice DOM APIs that are easy to use and standard across the big 4 (Chrome, Edge, Firefox, and Safari). Modern browsers now support ES6 features like Classes, Promises, etc... Add with great tools like Typescript and Webpack, why do we need giant frameworks again?
+According to various Web stats, less than 5% of all web traffic is IE, and its market share is shrinking fast. This leaves about 95% of the world using modern up-to-date browsers. Current browsers have some really nice DOM APIs that are easy to use and standard across the big 4 (Chrome, Edge, Firefox, and Safari). Modern browsers now support ES6 features like Classes, Promises, etc... Add with great tools like Typescript and Webpack, why do we need giant frameworks again?
 
 ## React and Angular
 While React and Angular solve a lot of problems and are amazing, I still find myself having issues:
