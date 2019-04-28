@@ -1,6 +1,6 @@
 {
   "name": "viage",
-  "version": "1.4.4",
+  "version": "1.4.8",
   "description": "Modern, minimal, fast web framework",
   "main": "./src/index.ts",
   "homepage": "https://github.com/schlotg/viage",
@@ -22,12 +22,12 @@
   "author": "Greg Schlottmann",
   "license": "MIT",
   "dependencies": {
-    "typescript": "^2.9.2"
+    "typescript": "3.4.5"
   },
   "devDependencies": {
-    "@types/jest": "23.3.10",
-    "fs-jetpack": "2.2.1",
-    "jest": "23.6.0",
+    "@types/jest": "24.0.11",
+    "fs-jetpack": "2.2.2",
+    "jest": "^24.7.1",
     "ts-jest": "23.10.5"
   },
   "jest": {
