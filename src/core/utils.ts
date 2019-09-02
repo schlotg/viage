@@ -59,7 +59,7 @@ export function debounce<T> (cb: Callback<T>, delay: number) {
 let handle: number;
   return (data: T) => {
     clearTimeout(handle);
-    handle = setTimeout(() => cb(data), delay);
+    handle = window.setTimeout(() => cb(data), delay);
   }
 }
 
@@ -69,7 +69,7 @@ export function throttle<T> (cb: Callback<T>, delay: number) {
   const latest: { data: T } = {} as { data: T };
   return (data: T) => {
     latest.data = data;
-    (!handle) ? cb(data) : handle = setTimeout(() => {
+    (!handle) ? cb(data) : handle = window.setTimeout(() => {
       cb(latest.data);
       handle = null;
     }, delay);
